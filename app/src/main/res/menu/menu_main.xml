@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mys3soft.simplephonebook.MainActivity">
+
+    <item
+        android:id="@+id/menu_profile"
+        app:showAsAction="never"
+        android:title="@string/Profile"
+        />
+
+    <item
+        android:id="@+id/menu_contacts"
+        app:showAsAction="never"
+        android:title="@string/Contacts"
+        />
+    <item
+        android:id="@+id/menu_notification"
+        app:showAsAction="never"
+        android:title="Notifications"
+        />
+    <item
+        android:id="@+id/menu_logout"
+        app:showAsAction="never"
+        android:title="@string/Logout"
+        />
+</menu>

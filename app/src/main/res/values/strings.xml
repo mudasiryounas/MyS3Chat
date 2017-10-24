@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyS3Chat</string>
+    <string name="Logout">Logout</string>
+    <string name="Profile">Profile</string>
+    <string name="Contacts">Contacts</string>
+    <string name="AddContacts">Add Contacts</string>
+</resources>

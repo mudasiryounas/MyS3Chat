@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    >
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColorHint="#CFD8DC"
+        android:textColor="#000000"
+        android:hint="Message..."
+        android:id="@+id/et_Message"
+        android:maxHeight="80dp"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:padding="4dp"
+        android:src="@android:drawable/ic_menu_send"
+        android:id="@+id/btn_Send"
+        android:onClick="btn_SendMessageClick"
+        />
+
+</LinearLayout>
