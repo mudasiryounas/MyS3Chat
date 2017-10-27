@@ -32,7 +32,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-
+    compile 'com.google.firebase:firebase-messaging:11.4.2'
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -41,4 +41,8 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
     testCompile 'junit:junit:4.12'
+
+
 }
+
+apply plugin: 'com.google.gms.google-services'

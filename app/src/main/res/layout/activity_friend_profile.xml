@@ -8,36 +8,28 @@
     android:orientation="vertical"
     tools:context="com.mys3soft.mys3chat.ActivityFriendProfile">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/pb_Loading_L_FriendProfile"
-        />
-
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Friend Name"
+        android:layout_marginTop="30dip"
         android:textSize="20dp"
+        android:layout_marginLeft="20dip"
+        android:layout_marginBottom="20dip"
         android:id="@+id/tv_FriendFullName_L_FriendProfile"
 
         />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Friend"
+        android:layout_gravity="center"
         android:id="@+id/btn_AddFriend"
         android:onClick="btn_SendFriendRequestClick"
         />
 
-    <Button
-        android:id="@+id/btn_SendMessage_L_FriendProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send Message"/>
+
 
 
 </LinearLayout>

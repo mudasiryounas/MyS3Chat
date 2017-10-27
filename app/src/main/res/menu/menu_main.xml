@@ -12,10 +12,10 @@
         />
 
     <item
-        android:id="@+id/menu_contacts"
-        app:showAsAction="never"
-        android:title="@string/Contacts"
-        />
+        android:id="@+id/menu_addContacts"
+        android:title="@string/AddContacts"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_notification"
         app:showAsAction="never"

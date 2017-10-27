@@ -1,5 +1,6 @@
 package com.mys3soft.mys3chat;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -28,16 +29,17 @@ import retrofit2.Call;
 
 public class ActivityAddContact extends AppCompatActivity {
 
-    ProgressBar pb;
+
     ListView lv_SerachList;
     EditText searchKey;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
-        pb =(ProgressBar) findViewById(R.id.pd_LoadingAddContact);
-        pb.setVisibility(View.INVISIBLE);
+        pd = new ProgressDialog(this);
+        pd.setMessage("Seraching...");
         lv_SerachList = (ListView) findViewById(R.id.lv_AddContactList);
         searchKey = (EditText) findViewById(R.id.et_SearchKey);
         // listener for item click
@@ -57,29 +59,29 @@ public class ActivityAddContact extends AppCompatActivity {
 
     public void btn_SearchClick(View view){
         if (!searchKey.getText().toString().equals("")){
+
             FindFriendsTask t = new FindFriendsTask();
             t.execute();
         }
     }
+
     public class FindFriendsTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
-            pb.setVisibility(View.VISIBLE);
+            pd.show();
         }
 
         @Override
         protected String doInBackground(Void... params) {
-
             IFireBaseAPI api = Tools.makeRetroFitApi();
             Call<String> call = api.getAllUsersAsJsonString();
-
             try {
                 return call.execute().body();
             } catch (IOException e) {
+                pd.hide();
                 e.printStackTrace();
             }
-
             return null;
         }
 
@@ -99,16 +101,18 @@ public class ActivityAddContact extends AppCompatActivity {
                     f.LastName = item.getString("LastName");
                     String serKey = Tools.encodeString(searchKey.getText().toString()).toLowerCase();
 
-                    if (f.Email.toLowerCase().contains(serKey) || f.FirstName.toLowerCase().contains(serKey) ||f.LastName.toLowerCase().contains(serKey)  ){
+                    String fullName = f.FirstName.toLowerCase() + " " + f.LastName.toLowerCase();
+
+                    if (f.Email.toLowerCase().contains(serKey) || fullName.contains(serKey)  ){
                         friendList.add(f);
                     }
-
                 }
                 ListAdapter adp = new FriendListAdapter(ActivityAddContact.this, friendList);
                 lv_SerachList.setAdapter(adp);
-                pb.setVisibility(View.INVISIBLE);
+               pd.hide();
 
             } catch (JSONException e) {
+                pd.hide();
                 e.printStackTrace();
             }
 

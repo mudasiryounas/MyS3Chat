@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.mys3soft.mys3chat.Models.User;
+import com.mys3soft.mys3chat.Services.Tools;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class FriendListAdapter extends ArrayAdapter<User> {
         TextView hiddenEmail = (TextView) customView.findViewById(R.id.tv_HiddenEmail);
         TextView tv_Name = (TextView) customView.findViewById(R.id.tv_FriendFullName);
         hiddenEmail.setText(String.valueOf(user.Email));
-        tv_Name.setText(user.FirstName + " " + user.LastName);
+        tv_Name.setText(Tools.toProperName(user.FirstName) + " " + Tools.toProperName(user.LastName));
         return customView;
     }
 

@@ -1,6 +1,8 @@
 package com.mys3soft.mys3chat.Services;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.mys3soft.mys3chat.Models.User;
@@ -30,6 +32,16 @@ public class Tools {
                 .build();
         return retrofit.create(IFireBaseAPI.class);
     }
+
+
+    public static String toProperName(String s) {
+        if (s.length() <= 1)
+            return s.toUpperCase();
+        return  s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+
+
 
 
 }

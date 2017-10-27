@@ -23,17 +23,20 @@ import com.mys3soft.mys3chat.Models.NotificationModel;
 import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
+import com.mys3soft.mys3chat.Services.LocalUserService;
 
 import java.util.List;
 
 public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
 
-    DataContext db = new DataContext(getContext(), null, null, 1);
-
+    private Context con;
+    private Button acceptBtn;
 
 
     public NotficationListAdapter(@NonNull Context context, List<NotificationModel> list) {
         super(context, R.layout.custom_notication_row, list);
+        con = context;
+
     }
 
     @NonNull
@@ -41,7 +44,7 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View customView = inflater.inflate(R.layout.custom_notication_row,parent,false);
+        View customView = inflater.inflate(R.layout.custom_notication_row, parent, false);
         NotificationModel model = getItem(position);
         // get layout
         LinearLayout layout = (LinearLayout) customView.findViewById(R.id.layout_CustomNotificationRow);
@@ -52,12 +55,12 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
         tv_NotficationMessage.setText(model.NotificationMessage);
 
         // friend request
-        if (model.NotificationType == 1){
+        if (model.NotificationType == 1) {
             // make button and append
-            Button acceptBtn = new Button(getContext());
+            acceptBtn = new Button(getContext());
             acceptBtn.setText("Accept");
 
-            setCustomOnClick(acceptBtn,model.EmailFrom);
+            setCustomOnClick(acceptBtn, model.EmailFrom);
             // set layout params
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -71,19 +74,23 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
     }
 
 
-
-    private void setCustomOnClick(final Button btn, final String email){
+    private void setCustomOnClick(final Button btn, final String friendEmail) {
 
         btn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        User user = db.getLocalUser();
+                        User user = LocalUserService.getLocalUserFromPreferences(con);
                         // add to friends and remove from requests
                         Firebase fireBase = new Firebase(StaticInfo.FriendsURL);
                         // set each other friends
-                        fireBase.child(user.Email).child(email).setValue("");
-                        fireBase.child(email).child(user.Email).setValue("");
+                        fireBase.child(user.Email).child(friendEmail).setValue("");
+                        fireBase.child(friendEmail).child(user.Email).setValue("");
+                        Firebase frRequ = new Firebase(StaticInfo.EndPoint + "/friendrequests");
+                        frRequ.child(user.Email).child(friendEmail).removeValue();
+                        acceptBtn.setEnabled(false);
+                        acceptBtn.setText("Accepted");
+
                     }
                 }
         );

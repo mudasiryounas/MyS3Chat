@@ -2,6 +2,7 @@ package com.mys3soft.mys3chat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -63,7 +64,6 @@ public class ActivityLogin extends AppCompatActivity {
             pd = new ProgressDialog(this);
             pd.setMessage("Loading...");
             pd.show();
-
             LoginTask t = new LoginTask();
             t.execute();
         }
@@ -105,8 +105,11 @@ public class ActivityLogin extends AppCompatActivity {
                     if (userObj.getString("Password").equals(pass)) {
                         pd.hide();
                         boolean resp = db.saveUserInLocalDB(email, userObj.getString("FirstName"), userObj.getString("LastName"));
-
                         if (resp) {
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences("LocalUser",0);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("Email",email);
+                            editor.commit();
                             finish();
                         } else {
                             Toast.makeText(ActivityLogin.this, "Something went wrong please try again", Toast.LENGTH_LONG).show();

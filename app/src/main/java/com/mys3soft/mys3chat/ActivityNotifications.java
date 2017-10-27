@@ -44,9 +44,6 @@ public class ActivityNotifications extends AppCompatActivity {
         setContentView(R.layout.activity_notifications);
 
         Firebase.setAndroidContext(this);
-
-
-        //pb_Loading_L_Notitications
         pb = (ProgressBar) findViewById(R.id.pb_Loading_L_Notitications);
         lv_NotificationList = (ListView) findViewById(R.id.lv_NoticicationList);
         user = db.getLocalUser();
@@ -110,10 +107,9 @@ public class ActivityNotifications extends AppCompatActivity {
                        }
                    }
                    if (fr != null){
-                       not.NotificationMessage = fr.FirstName + " " + fr.LastName;
+                       not.NotificationMessage = Tools.toProperName(fr.FirstName) + " " + Tools.toProperName(fr.LastName);
                        notificationList.add(not);
                    }
-
                 }
 
                 ListAdapter adp = new NotficationListAdapter(ActivityNotifications.this,notificationList);

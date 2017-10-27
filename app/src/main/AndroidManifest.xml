@@ -3,6 +3,7 @@
     package="com.mys3soft.mys3chat">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -21,11 +22,21 @@
         <activity android:name=".ActivityLogin" />
         <activity android:name=".ActivityRegister" />
         <activity android:name=".ActivityProfile" />
-        <activity android:name=".ActivityFriendList" />
         <activity android:name=".ActivityChat" />
         <activity android:name=".ActivityAddContact" />
         <activity android:name=".ActivityFriendProfile" />
-        <activity android:name=".ActivityNotifications"></activity>
+        <activity android:name=".ActivityNotifications" />
+
+        <service android:name=".MyFireBaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyFireBaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

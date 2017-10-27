@@ -10,8 +10,6 @@
     tools:context="com.mys3soft.mys3chat.ActivityAddContact">
 
 
-
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -20,45 +18,29 @@
             android:id="@+id/et_SearchKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:layout_marginLeft="10dp"
-            android:hint="Search Name , Email ..." />
+            android:ems="10"
+            android:hint="Search Name , Email ..."
+            android:inputType="text" />
 
-    <Button
-        android:id="@+id/bt_Search"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/et_SearchKey"
-        android:text="Se"
-        android:onClick="btn_SearchClick"
-        />
-
-        <ProgressBar
-            android:id="@+id/pd_LoadingAddContact"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toRightOf="@+id/bt_Search"
-            />
-
+        <Button
+            android:id="@+id/bt_Search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/et_SearchKey"
+            android:onClick="btn_SearchClick"
+            android:text="Search" />
 
 
     </RelativeLayout>
 
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/lv_AddContactList"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </ListView>
-
-
-
-
-
-
 
 
 </LinearLayout>

@@ -1,9 +1,12 @@
 package com.mys3soft.mys3chat;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,6 +15,7 @@ import com.firebase.client.Firebase;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
+import com.mys3soft.mys3chat.Services.LocalUserService;
 import com.mys3soft.mys3chat.Services.Tools;
 
 import org.json.JSONException;
@@ -28,37 +32,28 @@ import retrofit2.Call;
 
 public class ActivityFriendProfile extends AppCompatActivity {
 
-    ProgressBar pb;
     String friendEmail;
     TextView tv_FriendFullName;
     User user, f;
-
-    DataContext db = new DataContext(this, null, null, 1);
+    ProgressDialog pd;
+    Button btn_AddFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
-
         Firebase.setAndroidContext(this);
+        btn_AddFriend =(Button) findViewById(R.id.btn_AddFriend);
+        pd = new ProgressDialog(this);
 
+        pd.setMessage("Loading...");
         f = new User();
-
         Bundle extras = getIntent().getExtras();
-
         friendEmail = extras.getString("Email");
-
-        pb = (ProgressBar) findViewById(R.id.pb_Loading_L_FriendProfile);
-        pb.setVisibility(View.INVISIBLE);
         tv_FriendFullName = (TextView) findViewById(R.id.tv_FriendFullName_L_FriendProfile);
-
-        user = db.getLocalUser();
-
-
+        user = LocalUserService.getLocalUserFromPreferences(this);
         FindFriendsTask t = new FindFriendsTask();
         t.execute();
-
-
     }
 
 
@@ -66,7 +61,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            pb.setVisibility(View.VISIBLE);
+            pd.show();
         }
 
         @Override
@@ -79,6 +74,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
                 return call.execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
+                pd.hide();
             }
 
             return null;
@@ -87,25 +83,18 @@ public class ActivityFriendProfile extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonListString) {
-
-
             try {
                 JSONObject jsonObjectList = new JSONObject(jsonListString);
                 JSONObject item = jsonObjectList.getJSONObject(friendEmail);
-
                 f.Email = item.getString("Email");
                 f.FirstName = item.getString("FirstName");
                 f.LastName = item.getString("LastName");
-                tv_FriendFullName.setText(f.FirstName + " " + f.LastName);
-
-                // check if are friends then remove add button
-                // if not firiends then remove send message button
-                pb.setVisibility(View.INVISIBLE);
+                tv_FriendFullName.setText(Tools.toProperName(f.FirstName) + " " + Tools.toProperName(f.LastName));
+                pd.hide();
             } catch (JSONException e1) {
                 e1.printStackTrace();
+                pd.hide();
             }
-
-
         }
     }
 
@@ -113,8 +102,11 @@ public class ActivityFriendProfile extends AppCompatActivity {
     public void btn_SendFriendRequestClick(View view){
         Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/friendrequests");
         firebase.child(Tools.encodeString(f.Email)).child(Tools.encodeString(user.Email)).setValue("1");
-
+        btn_AddFriend.setEnabled(false);
+        btn_AddFriend.setText("Request Sent");
     }
+
+
 
 
 }
