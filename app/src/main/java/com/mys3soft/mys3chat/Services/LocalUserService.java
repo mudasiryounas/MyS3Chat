@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.mys3soft.mys3chat.Models.User;
 
-
+//
 public class LocalUserService {
     public static User getLocalUserFromPreferences(Context context){
         SharedPreferences pref = context.getSharedPreferences("LocalUser",0);
