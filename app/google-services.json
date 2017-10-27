@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "94096287271",
+    "firebase_url": "https://mys3chat.firebaseio.com",
+    "project_id": "mys3chat",
+    "storage_bucket": "mys3chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94096287271:android:6dec61df0959e475",
+        "android_client_info": {
+          "package_name": "com.mys3soft.mys3chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94096287271-b78ehru1vlh7cebpdr93af62mpj5c7df.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9Oo8snpMh2qNs6cFCzLBLKvntZviY-6U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

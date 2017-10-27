@@ -80,7 +80,7 @@ public class ActivityChat extends AppCompatActivity {
                 } else {
                     appendMessage(mess, 2);
                     Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(500);
+                    v.vibrate(200);
                 }
 
             }

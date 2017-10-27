@@ -5,27 +5,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="com.mys3soft.mys3chat.ActivityRegister">
 
     <EditText
+        android:layout_marginTop="50dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_FirstName_Rigister"
         android:inputType="text"
         android:maxLines="1"
         android:hint="Firstname..."
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginLeft="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginRight="10dip"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_LastName_Rigister"
         android:inputType="text"
+        android:layout_marginLeft="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginRight="10dip"
         android:maxLines="1"
-        android:hint="Lastname..."
-        android:layout_marginBottom="10dp"/>
+        android:hint="Lastname..."/>
 
     <EditText
         android:layout_width="match_parent"
@@ -34,7 +39,10 @@
         android:inputType="text"
         android:maxLines="1"
         android:hint="Email..."
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginLeft="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginRight="10dip"
+       />
 
     <EditText
         android:layout_width="match_parent"
@@ -43,12 +51,15 @@
         android:inputType="textPassword"
         android:maxLines="1"
         android:hint="Password..."
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginLeft="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginRight="10dip"
+        />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Signup"
         android:layout_marginBottom="20dp"
         android:onClick="btn_RegClick"
         />
