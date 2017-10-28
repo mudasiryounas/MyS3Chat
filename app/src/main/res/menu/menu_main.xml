@@ -21,6 +21,13 @@
         app:showAsAction="never"
         android:title="Notifications"
         />
+
+    <item
+        android:id="@+id/menu_refresh"
+        app:showAsAction="never"
+        android:title="Refresh"
+        />
+
     <item
         android:id="@+id/menu_logout"
         app:showAsAction="never"

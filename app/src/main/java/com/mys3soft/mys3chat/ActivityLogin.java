@@ -93,31 +93,24 @@ public class ActivityLogin extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonList) {
-
             String email = Tools.encodeString(et_Email.getText().toString());
             String pass = et_Password.getText().toString();
-
             try {
                 JSONObject obj = new JSONObject(jsonList);
-
                 if (obj.has(email)) {
                     JSONObject userObj = obj.getJSONObject(email);
                     if (userObj.getString("Password").equals(pass)) {
                         pd.hide();
-                        boolean resp = db.saveUserInLocalDB(email, userObj.getString("FirstName"), userObj.getString("LastName"));
-                        if (resp) {
-                            SharedPreferences pref = getApplicationContext().getSharedPreferences("LocalUser",0);
-                            SharedPreferences.Editor editor = pref.edit();
-                            editor.putString("Email",email);
-                            editor.commit();
-                            finish();
-                        } else {
-                            Toast.makeText(ActivityLogin.this, "Something went wrong please try again", Toast.LENGTH_LONG).show();
-                        }
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("LocalUser", 0);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("Email", email);
+                        editor.putString("FirstName", userObj.getString("FirstName"));
+                        editor.putString("LastName", userObj.getString("LastName"));
+                        editor.commit();
+                        finish();
                     } else {
                         pd.hide();
                         Toast.makeText(ActivityLogin.this, "Incorecct email or password", Toast.LENGTH_LONG).show();
-
                     }
                 } else {
                     pd.hide();

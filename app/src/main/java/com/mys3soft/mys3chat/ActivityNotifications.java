@@ -8,13 +8,16 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.mys3soft.mys3chat.Models.CatcheUserList;
+import com.firebase.client.FirebaseError;
 import com.mys3soft.mys3chat.Models.NotificationModel;
+import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
-import com.mys3soft.mys3chat.Services.FillUserListTask;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
+import com.mys3soft.mys3chat.Services.LocalUserService;
 import com.mys3soft.mys3chat.Services.Tools;
 
 import org.json.JSONException;
@@ -24,111 +27,74 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import retrofit2.Call;
 
 public class ActivityNotifications extends AppCompatActivity {
 
-    DataContext db = new DataContext(this, null, null, 1);
-
-
     ListView lv_NotificationList;
-    ProgressBar pb;
     User user;
-
+    List<NotificationModel> notificationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
-
         Firebase.setAndroidContext(this);
-        pb = (ProgressBar) findViewById(R.id.pb_Loading_L_Notitications);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         lv_NotificationList = (ListView) findViewById(R.id.lv_NoticicationList);
-        user = db.getLocalUser();
+        notificationList = new ArrayList<>();
+        user = LocalUserService.getLocalUserFromPreferences(this);
+        Firebase reqRef =  new Firebase(StaticInfo.EndPoint + "/friendrequests/"+user.Email);
+        reqRef.addChildEventListener(
+                new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Map map = dataSnapshot.getValue(Map.class);
+                        String senderEmail = map.get("Email").toString();
+                        String firstName = map.get("FirstName").toString();
+                        String lastName = map.get("LastName").toString();
+                        final String key = (String) dataSnapshot.getKey();
+                        NotificationModel not = new NotificationModel();
+                        not.FirstName = firstName;
+                        not.LastName = lastName;
+                        not.NotificationType = 1; // friend request
+                        notificationList.add(not);
+                        not.EmailFrom = key;
+                        not.NotificationMessage = Tools.toProperName(firstName) + " " + Tools.toProperName(lastName);
+                        ListAdapter adp = new NotficationListAdapter(ActivityNotifications.this, notificationList);
+                        lv_NotificationList.setAdapter(adp);
+                    }
 
-        // fill CathedUserList if empty
-        if (CatcheUserList.CatchedUserList.size() < 1){
-            FillUserListTask task = new FillUserListTask();
-            task.execute();
-        }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-        NotificationListTask t = new NotificationListTask();
-        t.execute();
+                    }
 
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-    }
+                    }
 
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-    public class NotificationListTask extends AsyncTask<Void, Void, String> {
+                    }
 
-        @Override
-        protected void onPreExecute() {
-            pb.setVisibility(View.VISIBLE);
-        }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
 
-        @Override
-        protected String doInBackground(Void... params) {
-
-            IFireBaseAPI api = Tools.makeRetroFitApi();
-            Call<String> call = api.getAllFriendRequestsAsJsonString();
-
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(String jsonListString) {
-
-            try {
-                JSONObject jsonObjectList = new JSONObject(jsonListString);
-
-                List<NotificationModel> notificationList = new ArrayList<>();
-
-                JSONObject userFriendRequests = jsonObjectList.getJSONObject(user.Email);
-                for (Iterator iterator = userFriendRequests.keys(); iterator.hasNext(); ) {
-                    final String key = (String) iterator.next();
-                    NotificationModel not = new NotificationModel();
-                    not.EmailFrom = key;
-                    not.NotificationType = 1;
-                    User fr = null;
-
-                   for (User item:CatcheUserList.CatchedUserList){
-                       if (item.Email.equals(key)){
-                           fr = item;
-                           break;
-                       }
-                   }
-                   if (fr != null){
-                       not.NotificationMessage = Tools.toProperName(fr.FirstName) + " " + Tools.toProperName(fr.LastName);
-                       notificationList.add(not);
-                   }
+                    }
                 }
-
-                ListAdapter adp = new NotficationListAdapter(ActivityNotifications.this,notificationList);
-                lv_NotificationList.setAdapter(adp);
-                pb.setVisibility(View.INVISIBLE);
-
-            } catch (JSONException e) {
-                pb.setVisibility(View.INVISIBLE);
-                e.printStackTrace();
-            }
+        );
 
 
-        }
     }
-
-
-
-
-
-
 
 }

@@ -10,30 +10,28 @@
     tools:context="com.mys3soft.mys3chat.ActivityAddContact">
 
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="10dip"
+        android:layout_marginLeft="10dip"
+        android:orientation="horizontal">
         <EditText
             android:id="@+id/et_SearchKey"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:ems="10"
             android:hint="Search Name , Email ..."
             android:inputType="text" />
-
         <Button
             android:id="@+id/bt_Search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/et_SearchKey"
             android:onClick="btn_SearchClick"
             android:text="Search" />
-
-
-    </RelativeLayout>
-
+    </LinearLayout>
 
     <ListView
         android:id="@+id/lv_AddContactList"

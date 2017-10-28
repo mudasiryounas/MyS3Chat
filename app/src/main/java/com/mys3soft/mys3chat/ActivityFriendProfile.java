@@ -24,8 +24,10 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 
@@ -101,7 +103,11 @@ public class ActivityFriendProfile extends AppCompatActivity {
 
     public void btn_SendFriendRequestClick(View view){
         Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/friendrequests");
-        firebase.child(Tools.encodeString(f.Email)).child(Tools.encodeString(user.Email)).setValue("1");
+        Map<String,String> map= new HashMap<>();
+        map.put("Email",user.Email);
+        map.put("FirstName",user.FirstName);
+        map.put("LastName",user.LastName);
+        firebase.child(Tools.encodeString(f.Email)).child(Tools.encodeString(user.Email)).setValue(map);
         btn_AddFriend.setEnabled(false);
         btn_AddFriend.setText("Request Sent");
     }

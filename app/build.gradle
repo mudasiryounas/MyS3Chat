@@ -7,8 +7,8 @@ android {
         applicationId "com.mys3soft.mys3chat"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -32,7 +32,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.google.firebase:firebase-messaging:11.4.2'
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -44,5 +43,3 @@ dependencies {
 
 
 }
-
-apply plugin: 'com.google.gms.google-services'

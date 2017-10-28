@@ -25,12 +25,15 @@ import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.LocalUserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
 
     private Context con;
     private Button acceptBtn;
+
 
 
     public NotficationListAdapter(@NonNull Context context, List<NotificationModel> list) {
@@ -60,7 +63,7 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
             acceptBtn = new Button(getContext());
             acceptBtn.setText("Accept");
 
-            setCustomOnClick(acceptBtn, model.EmailFrom);
+            setCustomOnClick(acceptBtn, model.EmailFrom,model.FirstName,model.LastName);
             // set layout params
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -74,7 +77,7 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
     }
 
 
-    private void setCustomOnClick(final Button btn, final String friendEmail) {
+    private void setCustomOnClick(final Button btn, final String friendEmail, final String friendFirstName, final String friendLastName) {
 
         btn.setOnClickListener(
                 new View.OnClickListener() {
@@ -84,8 +87,19 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
                         // add to friends and remove from requests
                         Firebase fireBase = new Firebase(StaticInfo.FriendsURL);
                         // set each other friends
-                        fireBase.child(user.Email).child(friendEmail).setValue("");
-                        fireBase.child(friendEmail).child(user.Email).setValue("");
+
+                        Map<String, String> map1 = new HashMap<>();
+                        map1.put("Email", friendEmail);
+                        map1.put("FirstName", friendFirstName);
+                        map1.put("LastName", friendLastName);
+                        fireBase.child(user.Email).child(friendEmail).setValue(map1);
+
+                        Map<String, String> map2 = new HashMap<>();
+                        map2.put("Email", user.Email);
+                        map2.put("FirstName", user.FirstName);
+                        map2.put("LastName", user.LastName);
+                        fireBase.child(friendEmail).child(user.Email).setValue(map2);
+
                         Firebase frRequ = new Firebase(StaticInfo.EndPoint + "/friendrequests");
                         frRequ.child(user.Email).child(friendEmail).removeValue();
                         acceptBtn.setEnabled(false);

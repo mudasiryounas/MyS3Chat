@@ -9,81 +9,106 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mys3soft.mys3chat.Models.User;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+
+
+
+
+/*
+
+Tables:
+    1) LocalUser
+    2) Friends -> contains local user friend list
+
+ */
+
 public class DataContext extends SQLiteOpenHelper {
 
     public DataContext(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, "mys3chat.db", factory, 1);
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "create table LocalUser (ID integer ,Email text, FirstName text, LastName text);";
-        db.execSQL(query);
+        String tblLocalUser = "create table LocalUser (ID integer ,Email text, FirstName text, LastName text); ";
+        String tblFriends = "create table Friends (Email text, FirstName text, LastName text);";
+        db.execSQL(tblLocalUser);
+        db.execSQL(tblFriends);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if LocalUser Contacts ");
         onCreate(db);
     }
 
-
-    public boolean doesUserExistsInLocalDB() {
+    public List<User> getUserFriendList() {
+        List<User> friendList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        String query = "select * from LocalUser where ID = 1 limit 1;";
-        Cursor c = db.rawQuery(query, null);
-        c.moveToFirst();
-
         try {
-            if (c.getString(c.getColumnIndex("Email")) != "") {
-                return true;
+            String query = "select * from Friends";
+            Cursor c = db.rawQuery(query, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                User friend = new User();
+                friend.Email = c.getString(c.getColumnIndex("Email"));
+                friend.FirstName = c.getString(c.getColumnIndex("FirstName"));
+                friend.LastName = c.getString(c.getColumnIndex("LastName"));
+                friendList.add(friend);
+                c.moveToNext();
             }
+            c.close();
+            return friendList;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return friendList;
         }
-        return false;
+
     }
 
+    public void refreshUserFriendList(List<User> friendList) {
 
-    public boolean saveUserInLocalDB(String email, String firstName, String lastName) {
+        for (User item : friendList) {
+            // check if user already exists
+            if (checkFriendAlreadyExists(item.Email) == 0) {
+                // insert
+                SQLiteDatabase db = getWritableDatabase();
+                String query = "insert into Friends (Email,FirstName,LastName) values('" + item.Email + "', '" + item.FirstName + "', '" + item.LastName + "');";
+                db.execSQL(query);
+              // db.close();
+            }
+        }
+    }
+
+    public int checkFriendAlreadyExists(String email) {
+        Cursor c = null;
+        SQLiteDatabase db = null;
         try {
-            String query = "INSERT INTO LocalUser (ID, Email, FirstName, LastName) values (1,'" + email + "', '" + firstName + "', '" + lastName + "');  ";
-            SQLiteDatabase db = getWritableDatabase();
-            db.execSQL(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            db = getReadableDatabase();
+            String query = "select count(*) from Friends where Email = '" + email + "'";
+            c = db.rawQuery(query, null);
+            if (c.moveToFirst()) {
+                return c.getInt(0);
+            }
+            return 0;
+        }
+        finally {
+            if (c != null) {
+                c.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
     }
 
-    public boolean deleteUserInLocalDB() {
-        try {
-            SQLiteDatabase db = getWritableDatabase();
-            db.execSQL("delete from LocalUser where ID = 1;");
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteAllFriendsFromLocalDB(){
+        String query = "delete from Friends";
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query);
     }
 
-    public User getLocalUser() {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "select * from LocalUser where ID = 1 limit 1;";
-        Cursor c = db.rawQuery(query, null);
-        c.moveToFirst();
-        User user = new User();
-        user.ID = c.getLong(c.getColumnIndex("ID"));
-        user.Email = c.getString(c.getColumnIndex("Email"));
-        user.FirstName = c.getString(c.getColumnIndex("FirstName"));
-        user.LastName = c.getString(c.getColumnIndex("LastName"));
-        return user;
-
-    }
 
 
 }

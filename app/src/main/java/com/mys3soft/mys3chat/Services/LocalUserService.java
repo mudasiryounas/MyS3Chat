@@ -5,13 +5,14 @@ import android.content.SharedPreferences;
 
 import com.mys3soft.mys3chat.Models.User;
 
-//
+
 public class LocalUserService {
     public static User getLocalUserFromPreferences(Context context){
         SharedPreferences pref = context.getSharedPreferences("LocalUser",0);
-        String userEmail = pref.getString("Email",null);
         User user = new User();
-        user.Email = userEmail;
+        user.Email = pref.getString("Email",null);
+        user.FirstName = pref.getString("FirstName",null);
+        user.LastName = pref.getString("LastName",null);
         return user;
     }
 
@@ -27,5 +28,7 @@ public class LocalUserService {
             return true;
         }
     }
+
+
 
 }

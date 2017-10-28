@@ -12,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
@@ -58,10 +59,11 @@ public class ActivityAddContact extends AppCompatActivity {
     }
 
     public void btn_SearchClick(View view){
-        if (!searchKey.getText().toString().equals("")){
-
+        if (!searchKey.getText().toString().equals("") && searchKey.getText().toString().length() > 2){
             FindFriendsTask t = new FindFriendsTask();
             t.execute();
+        }else  {
+            Toast.makeText(this, "Input at least 3 characters", Toast.LENGTH_SHORT).show();
         }
     }
 

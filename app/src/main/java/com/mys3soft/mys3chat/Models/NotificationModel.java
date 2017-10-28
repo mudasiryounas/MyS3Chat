@@ -17,4 +17,7 @@ public class NotificationModel {
     public int NotificationType;
     public String EmailFrom;
 
+    public String FirstName;
+    public String LastName;
+
 }
