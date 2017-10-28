@@ -42,24 +42,14 @@ public class ActivityChat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
-
         messageArea = (EditText) findViewById(R.id.et_Message);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         layout = (LinearLayout) findViewById(R.id.layout1);
-
         user = LocalUserService.getLocalUserFromPreferences(this);
         Firebase.setAndroidContext(this);
-    }
-
-
-    @Override
-    protected void onStart() {
-
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
         this.setTitle(extras.getString("FriendFullName"));
-
         final String ENDPOINT = "https://mys3chat.firebaseio.com/messages/";
         reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
         reference2 = new Firebase(ENDPOINT + friendEmail + "_" + user.Email);
@@ -102,6 +92,18 @@ public class ActivityChat extends AppCompatActivity {
 
             }
         });
+        StaticInfo.UserCurrentChatFriendEmail = friendEmail;
+    }
+
+
+    @Override
+    protected void onStart() {
+
+        Bundle extras = getIntent().getExtras();
+        friendEmail = extras.getString("FriendEmail");
+        this.setTitle(extras.getString("FriendFullName"));
+
+
 
         scrollView.post(new Runnable() {
             @Override
@@ -185,6 +187,8 @@ public class ActivityChat extends AppCompatActivity {
         super.onDestroy();
         StaticInfo.UserCurrentChatFriendEmail = "";
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
