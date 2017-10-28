@@ -82,6 +82,11 @@ public class Tools {
             int val = map.get(c);
             intEmail += val;
         }
+
+        if (intEmail.length() > 9 ){
+            intEmail = intEmail.substring(0,9);
+        }
+
         return Integer.parseInt(intEmail);
 
     }
