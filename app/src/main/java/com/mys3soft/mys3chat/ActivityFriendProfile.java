@@ -39,13 +39,14 @@ public class ActivityFriendProfile extends AppCompatActivity {
     User user, f;
     ProgressDialog pd;
     Button btn_AddFriend;
+    DataContext db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
         Firebase.setAndroidContext(this);
-        btn_AddFriend =(Button) findViewById(R.id.btn_AddFriend);
+        btn_AddFriend = (Button) findViewById(R.id.btn_AddFriend);
         pd = new ProgressDialog(this);
 
         pd.setMessage("Loading...");
@@ -53,9 +54,24 @@ public class ActivityFriendProfile extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("Email");
         tv_FriendFullName = (TextView) findViewById(R.id.tv_FriendFullName_L_FriendProfile);
+
         user = LocalUserService.getLocalUserFromPreferences(this);
-        FindFriendsTask t = new FindFriendsTask();
-        t.execute();
+
+        db = new DataContext(this, null, null, 1);
+
+        // check if already friends otherwise get info from server
+        User friend = db.getFriendByEmailFromLocalDB(friendEmail);
+        if ( friend.Email == null){
+            FindFriendsTask t = new FindFriendsTask();
+            t.execute();
+        }else {
+            tv_FriendFullName.setText(Tools.toProperName(friend.FirstName) + " " + Tools.toProperName(friend.LastName));
+            btn_AddFriend.setEnabled(false);
+            btn_AddFriend.setText("Friends");
+
+        }
+
+
     }
 
 
@@ -82,7 +98,6 @@ public class ActivityFriendProfile extends AppCompatActivity {
             return null;
         }
 
-
         @Override
         protected void onPostExecute(String jsonListString) {
             try {
@@ -99,20 +114,16 @@ public class ActivityFriendProfile extends AppCompatActivity {
             }
         }
     }
-
-
-    public void btn_SendFriendRequestClick(View view){
+    public void btn_SendFriendRequestClick(View view) {
         Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/friendrequests");
-        Map<String,String> map= new HashMap<>();
-        map.put("Email",user.Email);
-        map.put("FirstName",user.FirstName);
-        map.put("LastName",user.LastName);
+        Map<String, String> map = new HashMap<>();
+        map.put("Email", user.Email);
+        map.put("FirstName", user.FirstName);
+        map.put("LastName", user.LastName);
         firebase.child(Tools.encodeString(f.Email)).child(Tools.encodeString(user.Email)).setValue(map);
         btn_AddFriend.setEnabled(false);
         btn_AddFriend.setText("Request Sent");
     }
-
-
 
 
 }

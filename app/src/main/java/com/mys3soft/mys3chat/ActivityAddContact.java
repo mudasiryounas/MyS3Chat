@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
+import com.mys3soft.mys3chat.Services.LocalUserService;
 import com.mys3soft.mys3chat.Services.Tools;
 
 import org.json.JSONException;
@@ -92,6 +93,7 @@ public class ActivityAddContact extends AppCompatActivity {
         protected void onPostExecute(String jsonListString) {
 
             try {
+                User user = LocalUserService.getLocalUserFromPreferences(getApplicationContext());
                 JSONObject jsonObjectList = new JSONObject(jsonListString);
                 List<User> friendList = new ArrayList<>();
                 for (Iterator iterator = jsonObjectList.keys(); iterator.hasNext(); ) {
@@ -106,7 +108,12 @@ public class ActivityAddContact extends AppCompatActivity {
                     String fullName = f.FirstName.toLowerCase() + " " + f.LastName.toLowerCase();
 
                     if (f.Email.toLowerCase().contains(serKey) || fullName.contains(serKey)  ){
-                        friendList.add(f);
+
+                        if (!f.Email.equals(user.Email)){
+                            friendList.add(f);
+                        }
+
+
                     }
                 }
                 ListAdapter adp = new FriendListAdapter(ActivityAddContact.this, friendList);
@@ -121,6 +128,7 @@ public class ActivityAddContact extends AppCompatActivity {
 
         }
     }
+
 
 
 

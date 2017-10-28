@@ -7,13 +7,35 @@
     android:layout_height="match_parent"
     tools:context="com.mys3soft.mys3chat.MainActivity">
 
-    <ListView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lv_FriendList"
-        >
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:textSize="20dip"
+            android:textColor="#ffffff"
+            android:background="#1c2764"
+            android:padding="14dp"
+            />
 
-    </ListView>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_FriendList"
+            android:paddingTop="10dp"
+            >
+
+        </ListView>
+
+
+    </LinearLayout>
+
+
+
 
 
 

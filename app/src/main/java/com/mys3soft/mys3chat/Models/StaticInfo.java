@@ -9,4 +9,6 @@ public class StaticInfo {
     public static String UsersURL = "https://mys3chat.firebaseio.com/users";
     public static String FriendRequestsUrlURL = "";
 
+    public static String UserCurrentChatFriendEmail = "";
+
 }

@@ -76,7 +76,7 @@ public class DataContext extends SQLiteOpenHelper {
                 SQLiteDatabase db = getWritableDatabase();
                 String query = "insert into Friends (Email,FirstName,LastName) values('" + item.Email + "', '" + item.FirstName + "', '" + item.LastName + "');";
                 db.execSQL(query);
-              // db.close();
+                // db.close();
             }
         }
     }
@@ -92,8 +92,7 @@ public class DataContext extends SQLiteOpenHelper {
                 return c.getInt(0);
             }
             return 0;
-        }
-        finally {
+        } finally {
             if (c != null) {
                 c.close();
             }
@@ -103,12 +102,31 @@ public class DataContext extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteAllFriendsFromLocalDB(){
+    public void deleteAllFriendsFromLocalDB() {
         String query = "delete from Friends";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query);
     }
 
+    public void deleteFriendByEmailFromLocalDB(String email) {
+        String query = "delete from Friends where Email = '" + email + "';";
+        getWritableDatabase().execSQL(query);
+    }
+
+    public User getFriendByEmailFromLocalDB(String friendEmail) {
+        String query = "select * from Friends where Email = '" + friendEmail + "';";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        User friend = new User();
+
+      if( c.getCount() > 0 ){
+          friend.Email = c.getString(c.getColumnIndex("Email"));
+          friend.FirstName = c.getString(c.getColumnIndex("FirstName"));
+          friend.LastName = c.getString(c.getColumnIndex("LastName"));
+      }
+        return friend;
+    }
 
 
 }
