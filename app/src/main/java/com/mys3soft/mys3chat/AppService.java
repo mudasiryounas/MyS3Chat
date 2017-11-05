@@ -1,5 +1,6 @@
 package com.mys3soft.mys3chat;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -101,9 +102,10 @@ public class AppService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
         not.setContentIntent(pendingIntent);
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        not.setDefaults(Notification.DEFAULT_ALL);
+
         nm.notify(Tools.createUniqueIdPerUser(friendEmail), not.build());
-        //vibrate
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(200);
+
     }
 }

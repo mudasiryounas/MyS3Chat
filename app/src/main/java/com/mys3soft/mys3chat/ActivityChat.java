@@ -4,6 +4,12 @@ package com.mys3soft.mys3chat;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +30,11 @@ import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.LocalUserService;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.Inflater;
@@ -62,11 +73,12 @@ public class ActivityChat extends AppCompatActivity {
                 Map map = dataSnapshot.getValue(Map.class);
                 String mess = map.get("Message").toString();
                 String senderEmail = map.get("SenderEmail").toString();
+                String sentDate = map.get("SentDate") == null ? new Date().toString() : map.get("SentDate").toString();
                 if (senderEmail.equals(user.Email)) {
                     // login user
-                    appendMessage(mess, 1);
+                    appendMessage(mess, sentDate, 1);
                 } else {
-                    appendMessage(mess, 2);
+                    appendMessage(mess, sentDate, 2);
                 }
 
             }
@@ -105,7 +117,6 @@ public class ActivityChat extends AppCompatActivity {
         this.setTitle(extras.getString("FriendFullName"));
 
 
-
         scrollView.post(new Runnable() {
             @Override
             public void run() {
@@ -127,17 +138,44 @@ public class ActivityChat extends AppCompatActivity {
             map.put("SenderEmail", user.Email);
             map.put("FirstName", user.FirstName);
             map.put("LastName", user.LastName);
+
+            // DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+            Date date = new Date();
+
+            map.put("SentDate", dateFormat.format(date));
             reference1.push().setValue(map);
             reference2.push().setValue(map);
             refNotMess.push().setValue(map);
         }
     }
 
-    public void appendMessage(String mess, int messType) {
+    public void appendMessage(String mess, String sentDate, int messType) {
 
         TextView textView = new TextView(ActivityChat.this);
 
-        textView.setText(mess);
+        Calendar cal = Calendar.getInstance();
+        Date todayDate = new Date();
+        cal.setTime(todayDate);
+
+        int todayMonth = cal.get(Calendar.MONTH)+1;
+        int todayDay = cal.get(Calendar.DAY_OF_MONTH);
+
+        String[] date = sentDate.split(" ");
+        if (todayMonth == Integer.parseInt(date[1]) && todayDay == Integer.parseInt(date[0])) {
+            sentDate = "Today" + " " + date[3]+ " " + date[4];
+           // 06 11 17 12:28 AM
+        }else  if (todayMonth == Integer.parseInt(date[1]) && (todayDay-1) == Integer.parseInt(date[0])){
+            sentDate = "Yesterday"+ " " + date[3] + " " + date[4];
+        }
+
+        SpannableString dateString = new SpannableString(sentDate);
+        dateString.setSpan(new RelativeSizeSpan(0.7f), 0, sentDate.length(), 0);
+        dateString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, sentDate.length(), 0);
+
+        //date.setSpan(new ForegroundColorSpan(Color.BLUE), 0, date.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(mess + "\n");
+        textView.append(dateString);
         textView.setTextColor(Color.parseColor("#000000"));
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -190,7 +228,6 @@ public class ActivityChat extends AppCompatActivity {
         super.onDestroy();
         StaticInfo.UserCurrentChatFriendEmail = "";
     }
-
 
 
     @Override
