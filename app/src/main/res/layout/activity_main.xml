@@ -20,6 +20,7 @@
             android:textColor="#ffffff"
             android:background="#1c2764"
             android:padding="14dp"
+            android:layout_marginTop="-5dp"
             />
 
         <ListView

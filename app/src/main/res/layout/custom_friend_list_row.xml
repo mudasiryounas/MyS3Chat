@@ -20,8 +20,11 @@
         android:layout_height="41dp"
         android:layout_weight="1"
         android:text="TextView"
-        android:textSize="40px"
-        android:paddingLeft="10dp"
+        android:textSize="30px"
+        android:textColor="#181717"
+        android:paddingLeft="14dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         />
 
 </LinearLayout>

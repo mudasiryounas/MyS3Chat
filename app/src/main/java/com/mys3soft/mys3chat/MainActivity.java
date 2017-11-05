@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
@@ -49,6 +50,22 @@ public class MainActivity extends AppCompatActivity {
         pd = new ProgressDialog(this);
         pd.setMessage("Refreshing...");
 
+
+        // listener for item click
+        lv_FriendList.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TextView email = (TextView) view.findViewById(R.id.tv_HiddenEmail);
+                        TextView tv_Name = (TextView) view.findViewById(R.id.tv_FriendFullName);
+                        Intent intend = new Intent(getApplicationContext(), ActivityChat.class);
+                        intend.putExtra("FriendEmail", email.getText().toString());
+                        intend.putExtra("FriendFullName", tv_Name.getText().toString());
+                        startActivity(intend);
+                    }
+                }
+        );
+
         // check if user exists in local db
         user = LocalUserService.getLocalUserFromPreferences(this);
         if (user.Email == null) {
@@ -62,20 +79,7 @@ public class MainActivity extends AppCompatActivity {
             ListAdapter adp = new FriendListAdapter(MainActivity.this, db.getUserFriendList());
             lv_FriendList.setAdapter(adp);
 
-            // listener for item click
-            lv_FriendList.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            TextView email = (TextView) view.findViewById(R.id.tv_HiddenEmail);
-                            TextView tv_Name = (TextView) view.findViewById(R.id.tv_FriendFullName);
-                            Intent intend = new Intent(getApplicationContext(), ActivityChat.class);
-                            intend.putExtra("FriendEmail", email.getText().toString());
-                            intend.putExtra("FriendFullName", tv_Name.getText().toString());
-                            startActivity(intend);
-                        }
-                    }
-            );
+
         }
     }
 

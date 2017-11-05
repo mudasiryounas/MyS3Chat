@@ -1,6 +1,7 @@
 package com.mys3soft.mys3chat;
 
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -137,6 +138,7 @@ public class ActivityChat extends AppCompatActivity {
         TextView textView = new TextView(ActivityChat.this);
 
         textView.setText(mess);
+        textView.setTextColor(Color.parseColor("#000000"));
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -155,6 +157,7 @@ public class ActivityChat extends AppCompatActivity {
         else {
             textView.setBackgroundResource(R.drawable.messagebg2);
             textView.setPadding(18, 18, 18, 18);
+
             lp.gravity = Gravity.LEFT;
         }
 
