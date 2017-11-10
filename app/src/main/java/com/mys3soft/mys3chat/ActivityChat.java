@@ -29,6 +29,7 @@ import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.LocalUserService;
+import com.mys3soft.mys3chat.Services.Tools;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -158,22 +159,23 @@ public class ActivityChat extends AppCompatActivity {
         Date todayDate = new Date();
         cal.setTime(todayDate);
 
-        int todayMonth = cal.get(Calendar.MONTH)+1;
+        int todayMonth = cal.get(Calendar.MONTH) + 1;
         int todayDay = cal.get(Calendar.DAY_OF_MONTH);
 
         String[] date = sentDate.split(" ");
         if (todayMonth == Integer.parseInt(date[1]) && todayDay == Integer.parseInt(date[0])) {
-            sentDate = "Today" + " " + date[3]+ " " + date[4];
-           // 06 11 17 12:28 AM
-        }else  if (todayMonth == Integer.parseInt(date[1]) && (todayDay-1) == Integer.parseInt(date[0])){
-            sentDate = "Yesterday"+ " " + date[3] + " " + date[4];
+            sentDate = "Today" + " " + date[3] + " " + date[4];
+            // 06 11 17 12:28 AM
+        } else if (todayMonth == Integer.parseInt(date[1]) && (todayDay - 1) == Integer.parseInt(date[0])) {
+            sentDate = "Yesterday" + " " + date[3] + " " + date[4];
+        } else {
+            sentDate = date[0] + " " + Tools.toCharacterMonth(Integer.parseInt(date[1])) + " " + date[2] + " " + date[3] + " " + date[4];
         }
 
         SpannableString dateString = new SpannableString(sentDate);
         dateString.setSpan(new RelativeSizeSpan(0.7f), 0, sentDate.length(), 0);
         dateString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, sentDate.length(), 0);
 
-        //date.setSpan(new ForegroundColorSpan(Color.BLUE), 0, date.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(mess + "\n");
         textView.append(dateString);
         textView.setTextColor(Color.parseColor("#000000"));

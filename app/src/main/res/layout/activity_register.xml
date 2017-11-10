@@ -21,6 +21,7 @@
         android:layout_marginBottom="10dip"
         android:layout_marginRight="10dip"/>
 
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_Email_Rigister"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         android:maxLines="1"
         android:hint="Email..."
         android:layout_marginLeft="10dip"

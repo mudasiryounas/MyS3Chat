@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#1c2764</color>
     <color name="colorPrimaryDark">#182158</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#1c2764</color>
     <color name="messageTextColor">#000000</color>
 </resources>

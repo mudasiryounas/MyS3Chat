@@ -25,34 +25,33 @@ public class ActivityRegister extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        et_Email = (EditText)findViewById(R.id.et_Email_Rigister);
-        et_Password = (EditText)findViewById(R.id.et_Password_Rigister);
-        et_FirstName = (EditText)findViewById(R.id.et_FirstName_Rigister);
-        et_LastName = (EditText)findViewById(R.id.et_LastName_Rigister);
+        et_Email = (EditText) findViewById(R.id.et_Email_Rigister);
+        et_Password = (EditText) findViewById(R.id.et_Password_Rigister);
+        et_FirstName = (EditText) findViewById(R.id.et_FirstName_Rigister);
+        et_LastName = (EditText) findViewById(R.id.et_LastName_Rigister);
 
     }
 
-    public void btn_RegClick(View view){
-        if(et_Email.getText().toString().equals("")){
-            et_Email.setError("Enter Email...");
+    public void btn_RegClick(View view) {
+
+        if (et_FirstName.getText().toString().equals("")) {
+            et_FirstName.setError("Enter Firstname");
+        } else if (et_LastName.getText().toString().equals("")) {
+            et_LastName.setError("Enter Lastname");
+        } else if (et_Email.getText().toString().equals("") || !Tools.isValidEmail(et_Email.getText().toString())) {
+            et_Email.setError("Enter Valid Email");
         }
-       else  if(et_Password.getText().toString().equals("")){
+        else if (et_Password.getText().toString().equals("")) {
             et_Password.setError("Enter Password");
-        }
-        else  if(et_FirstName.getText().toString().equals("")){
-            et_FirstName.setError("Enter Password");
-        }
-        else  if(et_LastName.getText().toString().equals("")){
-            et_LastName.setError("Enter Password");
-        }
-        else{
+        } else {
             final ProgressDialog pd = new ProgressDialog(this);
             pd.setMessage("Loading...");
             pd.show();
 
-            String email = Tools.encodeString(et_Email.getText().toString());//.replace(".","-");
+            String email = Tools.encodeString(et_Email.getText().toString());
 
             Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/users");
+
             firebase.child(email).child("FirstName").setValue(et_FirstName.getText().toString());
             firebase.child(email).child("LastName").setValue(et_LastName.getText().toString());
             firebase.child(email).child("Email").setValue(email);

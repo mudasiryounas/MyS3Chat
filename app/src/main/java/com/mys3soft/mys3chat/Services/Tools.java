@@ -1,18 +1,6 @@
 package com.mys3soft.mys3chat.Services;
 
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-
-import com.mys3soft.mys3chat.Models.User;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Retrofit;
@@ -30,8 +18,7 @@ public class Tools {
         return string.replace(",", ".");
     }
 
-
-    public static IFireBaseAPI makeRetroFitApi(){
+    public static IFireBaseAPI makeRetroFitApi() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ENDPOINT)
                 .addConverterFactory(ScalarsConverterFactory.create())
@@ -39,15 +26,14 @@ public class Tools {
         return retrofit.create(IFireBaseAPI.class);
     }
 
-
     public static String toProperName(String s) {
         if (s.length() <= 1)
             return s.toUpperCase();
-        return  s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
-    public static int createUniqueIdPerUser(String userEmail){
-       String email =  userEmail.split("@")[0].toLowerCase();
+    public static int createUniqueIdPerUser(String userEmail) {
+        String email = userEmail.split("@")[0].toLowerCase();
         final Map<Character, Integer> map;
         map = new HashMap<>();
         map.put('a', 1);
@@ -78,19 +64,37 @@ public class Tools {
         map.put('z', 26);
         String intEmail = "";
 
-        for (char c : email.toCharArray()){
+        for (char c : email.toCharArray()) {
             int val = map.get(c);
             intEmail += val;
         }
 
-        if (intEmail.length() > 9 ){
-            intEmail = intEmail.substring(0,9);
+        if (intEmail.length() > 9) {
+            intEmail = intEmail.substring(0, 9);
         }
 
         return Integer.parseInt(intEmail);
 
     }
 
+    public static boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
 
+    public static String toCharacterMonth(int month) {
+        if (month == 1) return "Jan";
+        else if (month == 2) return "Feb";
+        else if (month == 3) return "Mar";
+        else if (month == 4) return "Apr";
+        else if (month == 5) return "May";
+        else if (month == 6) return "Jun";
+        else if (month == 7) return "Jul";
+        else if (month == 8) return "Aug";
+        else if (month == 9) return "Sep";
+        else if (month == 10) return "Oct";
+        else if (month == 11) return "Nov";
+        else return "Dec";
+    }
 
 }
