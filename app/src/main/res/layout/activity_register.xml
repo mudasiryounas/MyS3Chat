@@ -1,70 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context="com.mys3soft.mys3chat.ActivityRegister">
 
-    <EditText
-        android:layout_marginTop="50dip"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_FirstName_Rigister"
-        android:inputType="textCapSentences"
-        android:maxLines="1"
-        android:hint="Firstname..."
-        android:layout_marginLeft="10dip"
-        android:layout_marginBottom="10dip"
-        android:layout_marginRight="10dip"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_FirstName_Rigister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="50dip"
+                android:hint="Firstname..."
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
 
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_LastName_Rigister"
-        android:inputType="textCapSentences"
-        android:layout_marginLeft="10dip"
-        android:layout_marginBottom="10dip"
-        android:layout_marginRight="10dip"
-        android:maxLines="1"
-        android:hint="Lastname..."/>
+            <EditText
+                android:id="@+id/et_LastName_Rigister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:hint="Lastname..."
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_Email_Rigister"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:hint="Email..."
-        android:layout_marginLeft="10dip"
-        android:layout_marginBottom="10dip"
-        android:layout_marginRight="10dip"
-       />
+            <EditText
+                android:id="@+id/et_Email_Rigister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:hint="Email..."
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_Password_Rigister"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:hint="Password..."
-        android:layout_marginLeft="10dip"
-        android:layout_marginBottom="10dip"
-        android:layout_marginRight="10dip"
-        />
+            <EditText
+                android:id="@+id/et_Password_Rigister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:hint="Password..."
+                android:inputType="textPassword"
+                android:maxLines="1" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Signup"
-        android:layout_marginBottom="20dp"
-        android:onClick="btn_RegClick"
-        />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:onClick="btn_RegClick"
+                android:layout_gravity="center"
+                android:text="Signup" />
 
+        </LinearLayout>
 
+    </ScrollView>
 
 </LinearLayout>

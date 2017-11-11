@@ -50,20 +50,20 @@ public class ActivityAddContact extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         TextView email = (TextView) view.findViewById(R.id.tv_HiddenEmail);
-                       // start FriendProfileFull
-                        Intent intent = new Intent(ActivityAddContact.this,ActivityFriendProfile.class);
-                        intent.putExtra("Email",email.getText().toString());
+                        // start FriendProfileFull
+                        Intent intent = new Intent(ActivityAddContact.this, ActivityFriendProfile.class);
+                        intent.putExtra("Email", email.getText().toString());
                         startActivity(intent);
                     }
                 }
         );
     }
 
-    public void btn_SearchClick(View view){
-        if (!searchKey.getText().toString().equals("") && searchKey.getText().toString().length() > 2){
+    public void btn_SearchClick(View view) {
+        if (!searchKey.getText().toString().equals("") && searchKey.getText().toString().length() > 2) {
             FindFriendsTask t = new FindFriendsTask();
             t.execute();
-        }else  {
+        } else {
             Toast.makeText(this, "Input at least 3 characters", Toast.LENGTH_SHORT).show();
         }
     }
@@ -97,28 +97,27 @@ public class ActivityAddContact extends AppCompatActivity {
                 JSONObject jsonObjectList = new JSONObject(jsonListString);
                 List<User> friendList = new ArrayList<>();
                 for (Iterator iterator = jsonObjectList.keys(); iterator.hasNext(); ) {
-                    String key = (String) iterator.next();
-                    JSONObject item = jsonObjectList.getJSONObject(key);
-                    User f = new User();
-                    f.Email = item.getString("Email");
-                    f.FirstName = item.getString("FirstName");
-                    f.LastName = item.getString("LastName");
-                    String serKey = Tools.encodeString(searchKey.getText().toString()).toLowerCase();
-
-                    String fullName = f.FirstName.toLowerCase() + " " + f.LastName.toLowerCase();
-
-                    if (f.Email.toLowerCase().contains(serKey) || fullName.contains(serKey)  ){
-
-                        if (!f.Email.equals(user.Email)){
-                            friendList.add(f);
+                    try {
+                        String key = (String) iterator.next();
+                        JSONObject item = jsonObjectList.getJSONObject(key);
+                        User f = new User();
+                        f.Email = item.getString("Email");
+                        f.FirstName = item.getString("FirstName");
+                        f.LastName = item.getString("LastName");
+                        String serKey = Tools.encodeString(searchKey.getText().toString()).toLowerCase();
+                        String fullName = f.FirstName.toLowerCase() + " " + f.LastName.toLowerCase();
+                        if (f.Email.toLowerCase().contains(serKey) || fullName.contains(serKey)) {
+                            if (!f.Email.equals(user.Email)) {
+                                friendList.add(f);
+                            }
                         }
-
-
+                    } catch (Exception exx) {
+                        continue;
                     }
                 }
                 ListAdapter adp = new FriendListAdapter(ActivityAddContact.this, friendList);
                 lv_SerachList.setAdapter(adp);
-               pd.hide();
+                pd.hide();
 
             } catch (JSONException e) {
                 pd.hide();
@@ -128,8 +127,6 @@ public class ActivityAddContact extends AppCompatActivity {
 
         }
     }
-
-
 
 
 }
