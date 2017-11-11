@@ -12,6 +12,10 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.mys3soft.mys3chat.Services.Tools;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ActivityRegister extends AppCompatActivity {
 
 
@@ -38,7 +42,9 @@ public class ActivityRegister extends AppCompatActivity {
             et_FirstName.setError("Enter Firstname");
         } else if (et_LastName.getText().toString().equals("")) {
             et_LastName.setError("Enter Lastname");
-        } else if (et_Email.getText().toString().equals("") || !Tools.isValidEmail(et_Email.getText().toString())) {
+        } else if (et_Email.getText().toString().equals("") || !Tools.isValidEmail(et_Email.getText().toString())
+                || et_Email.getText().toString().contains("_")
+                ) {
             et_Email.setError("Enter Valid Email");
         }
         else if (et_Password.getText().toString().equals("")) {
@@ -47,15 +53,16 @@ public class ActivityRegister extends AppCompatActivity {
             final ProgressDialog pd = new ProgressDialog(this);
             pd.setMessage("Loading...");
             pd.show();
-
             String email = Tools.encodeString(et_Email.getText().toString());
-
             Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/users");
-
+            // check if user already exists
             firebase.child(email).child("FirstName").setValue(et_FirstName.getText().toString());
             firebase.child(email).child("LastName").setValue(et_LastName.getText().toString());
             firebase.child(email).child("Email").setValue(email);
             firebase.child(email).child("Password").setValue(et_Password.getText().toString());
+            DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+            Date date = new Date();
+            firebase.child(email).child("Status").setValue( dateFormat.format(date));
             Toast.makeText(this, "Signup Success", Toast.LENGTH_SHORT).show();
             pd.hide();
             finish();

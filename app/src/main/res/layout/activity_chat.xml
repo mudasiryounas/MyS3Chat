@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +9,7 @@
     android:paddingBottom="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="16dp"
+    android:paddingTop="2dp"
     android:background="#f3faff"
     tools:context="com.mys3soft.mys3chat.ActivityChat">
 
@@ -50,10 +51,9 @@
                 <!--android:textColor="#000" />-->
 
 
-
         </LinearLayout>
-    </ScrollView>
 
+    </ScrollView>
 
     <include
         layout="@layout/message_area"
@@ -61,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:gravity="bottom" />
+
 
 
 </LinearLayout>

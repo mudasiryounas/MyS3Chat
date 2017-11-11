@@ -13,6 +13,7 @@
         android:layout_weight="1"
         android:textColorHint="#CFD8DC"
         android:textColor="#000000"
+        android:inputType="textCapSentences"
         android:hint="Message..."
         android:id="@+id/et_Message"
         android:maxHeight="80dp"

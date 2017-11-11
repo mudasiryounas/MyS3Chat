@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
@@ -26,7 +28,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,17 +45,17 @@ public class MainActivity extends AppCompatActivity {
     ListView lv_FriendList;
     User user;
     ProgressDialog pd;
+    Firebase refUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Firebase.setAndroidContext(this);
 
         lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
         pd = new ProgressDialog(this);
         pd.setMessage("Refreshing...");
-
-
         // listener for item click
         lv_FriendList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -78,9 +83,15 @@ public class MainActivity extends AppCompatActivity {
             db = new DataContext(this, null, null, 1);
             ListAdapter adp = new FriendListAdapter(MainActivity.this, db.getUserFriendList());
             lv_FriendList.setAdapter(adp);
-
-
+            refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (refUser != null)
+            refUser.child("Status").setValue("Online");
     }
 
     @Override
@@ -177,5 +188,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // set last seen
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+        Date date = new Date();
+        refUser.child("Status").setValue(dateFormat.format(date));
+    }
+
 
 }

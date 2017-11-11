@@ -2,6 +2,7 @@ package com.mys3soft.mys3chat;
 
 
 import android.graphics.Color;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -47,9 +48,10 @@ public class ActivityChat extends AppCompatActivity {
     EditText messageArea;
     ScrollView scrollView;
     LinearLayout layout;
-    Firebase reference1, reference2, refNotMess;
+    Firebase reference1, reference2, refNotMess, refFriend;
     User user;
     String friendEmail;
+    Firebase refUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class ActivityChat extends AppCompatActivity {
         final String ENDPOINT = "https://mys3chat.firebaseio.com/messages/";
         reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
         reference2 = new Firebase(ENDPOINT + friendEmail + "_" + user.Email);
+        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
         refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
         reference1.addChildEventListener(new ChildEventListener() {
             @Override
@@ -74,7 +77,7 @@ public class ActivityChat extends AppCompatActivity {
                 Map map = dataSnapshot.getValue(Map.class);
                 String mess = map.get("Message").toString();
                 String senderEmail = map.get("SenderEmail").toString();
-                String sentDate = map.get("SentDate") == null ? new Date().toString() : map.get("SentDate").toString();
+                String sentDate = map.get("SentDate").toString();
                 if (senderEmail.equals(user.Email)) {
                     // login user
                     appendMessage(mess, sentDate, 1);
@@ -106,32 +109,82 @@ public class ActivityChat extends AppCompatActivity {
 
             }
         });
-        StaticInfo.UserCurrentChatFriendEmail = friendEmail;
-    }
+        refFriend.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            if (dataSnapshot.getKey().equals("Status")){
+                String friendStatus = dataSnapshot.getValue().toString();
+                if (!friendStatus.equals("Online")){
+                    friendStatus = Tools.lastSeenProper(friendStatus);
+                }
+                getSupportActionBar().setSubtitle(friendStatus);
 
+            }
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                String friendStatus = dataSnapshot.getValue().toString();
+                if (!friendStatus.equals("Online")){
+                    friendStatus = Tools.lastSeenProper(friendStatus);
+                }
+                getSupportActionBar().setSubtitle(friendStatus);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+        StaticInfo.UserCurrentChatFriendEmail = friendEmail;
+        refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
+
+//        messageArea.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                scrollView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        scrollView.fullScroll(View.FOCUS_DOWN);
+//                    }
+//                });
+//            }
+//        });
+
+
+    }
 
     @Override
     protected void onStart() {
-
+        super.onStart();
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
         this.setTitle(extras.getString("FriendFullName"));
-
-
         scrollView.post(new Runnable() {
             @Override
             public void run() {
                 scrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
-
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
-        super.onStart();
+        // update status to online
+        refUser.child("Status").setValue("Online");
     }
 
     public void btn_SendMessageClick(View view) {
 
-        String message = messageArea.getText().toString();
+        String message = messageArea.getText().toString().trim();
         messageArea.setText("");
         if (!message.equals("")) {
             Map<String, String> map = new HashMap<>();
@@ -222,13 +275,20 @@ public class ActivityChat extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         StaticInfo.UserCurrentChatFriendEmail = "";
-
+        // set last seen
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+        Date date = new Date();
+        refUser.child("Status").setValue(dateFormat.format(date));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         StaticInfo.UserCurrentChatFriendEmail = "";
+        // set last seen
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+        Date date = new Date();
+        refUser.child("Status").setValue(dateFormat.format(date));
     }
 
 

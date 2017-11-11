@@ -1,5 +1,7 @@
 package com.mys3soft.mys3chat.Services;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,6 +97,40 @@ public class Tools {
         else if (month == 10) return "Oct";
         else if (month == 11) return "Nov";
         else return "Dec";
+    }
+
+    public static String lastSeenProper(String lastSeenDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+        Date currentDate = new Date();
+        String cuurentDateString = dateFormat.format(currentDate);
+
+        Date nw = null;
+        Date seen = null;
+        try {
+
+            nw = dateFormat.parse(cuurentDateString);
+            seen = dateFormat.parse(lastSeenDate);
+            long diff = nw.getTime() - seen.getTime();
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+            long diffHours = diff / (60 * 60 * 1000) % 24;
+            long diffMinutes = diff / (60 * 1000) % 60;
+            if (diffDays > 0)
+                return "Last seen " + diffDays + " days ago";
+            else if (diffHours > 0)
+                return "Last seen " + diffHours + " hours ago";
+            else if (diffMinutes > 0) {
+                if (diffMinutes <= 1) {
+                    return "Last seen 1 minute ago";
+                } else {
+                    return "Last seen " + diffMinutes + " minutes ago";
+                }
+            } else return "Last seen a moment ago";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+
+
     }
 
 }

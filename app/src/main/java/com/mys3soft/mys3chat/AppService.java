@@ -55,7 +55,6 @@ public class AppService extends Service {
                             reference.child(dataSnapshot.getKey()).removeValue();
                         }
 
-
                     }
 
                     @Override
@@ -85,6 +84,7 @@ public class AppService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         sendBroadcast(new Intent("com.mys3soft.mys3chat.restartservice"));
     }
 
@@ -102,9 +102,7 @@ public class AppService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
         not.setContentIntent(pendingIntent);
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         not.setDefaults(Notification.DEFAULT_ALL);
-
         nm.notify(Tools.createUniqueIdPerUser(friendEmail), not.build());
 
     }
