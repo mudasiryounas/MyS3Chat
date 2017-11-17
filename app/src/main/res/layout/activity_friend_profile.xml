@@ -23,7 +23,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Friend"
+        android:text="Add Contact"
         android:layout_gravity="center"
         android:id="@+id/btn_AddFriend"
         android:onClick="btn_SendFriendRequestClick"

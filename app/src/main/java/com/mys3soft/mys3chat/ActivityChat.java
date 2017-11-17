@@ -272,16 +272,6 @@ public class ActivityChat extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        StaticInfo.UserCurrentChatFriendEmail = "";
-        // set last seen
-        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
-        Date date = new Date();
-        refUser.child("Status").setValue(dateFormat.format(date));
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         StaticInfo.UserCurrentChatFriendEmail = "";

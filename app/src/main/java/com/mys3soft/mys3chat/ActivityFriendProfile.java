@@ -67,7 +67,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
         }else {
             tv_FriendFullName.setText(Tools.toProperName(friend.FirstName) + " " + Tools.toProperName(friend.LastName));
             btn_AddFriend.setEnabled(false);
-            btn_AddFriend.setText("Friends");
+            btn_AddFriend.setText("Connected");
 
         }
 

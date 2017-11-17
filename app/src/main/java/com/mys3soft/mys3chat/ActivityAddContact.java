@@ -60,10 +60,11 @@ public class ActivityAddContact extends AppCompatActivity {
     }
 
     public void btn_SearchClick(View view) {
-        if (!searchKey.getText().toString().equals("") && searchKey.getText().toString().length() > 2) {
+        if (!searchKey.getText().toString().trim().equals("") && searchKey.getText().toString().length() > 2) {
             FindFriendsTask t = new FindFriendsTask();
             t.execute();
         } else {
+            searchKey.setText("");
             Toast.makeText(this, "Input at least 3 characters", Toast.LENGTH_SHORT).show();
         }
     }
@@ -104,7 +105,7 @@ public class ActivityAddContact extends AppCompatActivity {
                         f.Email = item.getString("Email");
                         f.FirstName = item.getString("FirstName");
                         f.LastName = item.getString("LastName");
-                        String serKey = Tools.encodeString(searchKey.getText().toString()).toLowerCase();
+                        String serKey = Tools.encodeString(searchKey.getText().toString()).toLowerCase().trim();
                         String fullName = f.FirstName.toLowerCase() + " " + f.LastName.toLowerCase();
                         if (f.Email.toLowerCase().contains(serKey) || fullName.contains(serKey)) {
                             if (!f.Email.equals(user.Email)) {

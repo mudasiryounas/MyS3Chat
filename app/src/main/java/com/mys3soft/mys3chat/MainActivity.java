@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
 
+        db = new DataContext(this, null, null, 1);
         lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
         pd = new ProgressDialog(this);
         pd.setMessage("Refreshing...");
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startService(new Intent(this, AppService.class));
             // set last msgs
-            db = new DataContext(this, null, null, 1);
+
             ListAdapter adp = new FriendListAdapter(MainActivity.this, db.getUserFriendList());
             lv_FriendList.setAdapter(adp);
             refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
@@ -90,6 +91,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        user = LocalUserService.getLocalUserFromPreferences(this);
+        if (user.Email != null){
+            if (refUser == null){
+                refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
+            }
+        }
         if (refUser != null)
             refUser.child("Status").setValue("Online");
     }
@@ -105,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_logout) {
+            // set last seen
+            DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+            Date date = new Date();
+            refUser.child("Status").setValue(dateFormat.format(date));
             if (LocalUserService.deleteLocalUserFromPreferences(this)) {
                 db.deleteAllFriendsFromLocalDB();
                 System.exit(1);
