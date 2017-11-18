@@ -35,7 +35,7 @@ public class Tools {
     }
 
     public static int createUniqueIdPerUser(String userEmail) {
-        String email = userEmail.split("@")[0].toLowerCase();
+        String email = userEmail.split("@")[0].toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
         final Map<Character, Integer> map;
         map = new HashMap<>();
         map.put('a', 1);
@@ -67,7 +67,12 @@ public class Tools {
         String intEmail = "";
 
         for (char c : email.toCharArray()) {
-            int val = map.get(c);
+            int val = 0;
+            try {
+                val = map.get(c);
+            } catch (Exception e) {
+
+            }
             intEmail += val;
         }
 
