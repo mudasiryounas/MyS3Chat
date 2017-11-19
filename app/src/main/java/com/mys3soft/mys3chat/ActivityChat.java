@@ -1,16 +1,21 @@
 package com.mys3soft.mys3chat;
 
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StrikethroughSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,22 +79,37 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                Map map = dataSnapshot.getValue(Map.class);
-                String mess = map.get("Message").toString();
-                String senderEmail = map.get("SenderEmail").toString();
-                String sentDate = map.get("SentDate").toString();
-                if (senderEmail.equals(user.Email)) {
-                    // login user
-                    appendMessage(mess, sentDate, 1);
+                if (!dataSnapshot.getKey().equals(StaticInfo.TypingStatus)) {
+                    Map map = dataSnapshot.getValue(Map.class);
+                    String mess = map.get("Message").toString();
+                    String senderEmail = map.get("SenderEmail").toString();
+                    String sentDate = map.get("SentDate").toString();
+                    if (senderEmail.equals(user.Email)) {
+                        // login user
+                        appendMessage(mess, sentDate, 1);
+                    } else {
+                        appendMessage(mess, sentDate, 2);
+                    }
                 } else {
-                    appendMessage(mess, sentDate, 2);
+                    // show typing status
+                    String typingStatus = dataSnapshot.getValue().toString();
+                    if (typingStatus.equals("Typing")) {
+                        getSupportActionBar().setSubtitle(typingStatus + "...");
+                    }
                 }
 
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                String typingStatus = dataSnapshot.getValue().toString();
+                if (typingStatus.equals("Typing")) {
+                    getSupportActionBar().setSubtitle(typingStatus + "...");
+                }
+                else {
+                    // check if online
+                    getSupportActionBar().setSubtitle("Online");
+                }
             }
 
             @Override
@@ -112,21 +132,35 @@ public class ActivityChat extends AppCompatActivity {
         refFriend.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            if (dataSnapshot.getKey().equals("Status")){
-                String friendStatus = dataSnapshot.getValue().toString();
-                if (!friendStatus.equals("Online")){
-                    friendStatus = Tools.lastSeenProper(friendStatus);
-                }
-                getSupportActionBar().setSubtitle(friendStatus);
+                if (dataSnapshot.getKey().equals("Status")) {
+                    // check if subtitle is not Typing
+                    CharSequence subTitle = getSupportActionBar().getSubtitle();
+                    if (subTitle != null){
+                        if (!subTitle.equals("Typing...")) {
+                            String friendStatus = dataSnapshot.getValue().toString();
+                            if (!friendStatus.equals("Online")) {
+                                friendStatus = Tools.lastSeenProper(friendStatus);
+                            }
+                            getSupportActionBar().setSubtitle(friendStatus);
+                        }
+                    }else {
+                        String friendStatus = dataSnapshot.getValue().toString();
+                        if (!friendStatus.equals("Online")) {
+                            friendStatus = Tools.lastSeenProper(friendStatus);
+                        }
+                        getSupportActionBar().setSubtitle(friendStatus);
+                    }
 
-            }
+
+
+                }
 
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String friendStatus = dataSnapshot.getValue().toString();
-                if (!friendStatus.equals("Online")){
+                if (!friendStatus.equals("Online")) {
                     friendStatus = Tools.lastSeenProper(friendStatus);
                 }
                 getSupportActionBar().setSubtitle(friendStatus);
@@ -149,6 +183,27 @@ public class ActivityChat extends AppCompatActivity {
         });
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
+
+        messageArea.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (messageArea.getText().toString().length() == 0) {
+                    reference2.child(StaticInfo.TypingStatus).setValue("");
+                } else if (messageArea.getText().toString().length() == 1) {
+                    reference2.child(StaticInfo.TypingStatus).setValue("Typing");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 //        messageArea.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
@@ -279,23 +334,48 @@ public class ActivityChat extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
         Date date = new Date();
         refUser.child("Status").setValue(dateFormat.format(date));
+       // reference2.child(StaticInfo.TypingStatus).setValue("");
     }
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    protected void onStop() {
+        super.onStop();
+        StaticInfo.UserCurrentChatFriendEmail = "";
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_deleteConservation) {
-            reference1.removeValue();
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure to permanently delete this chat?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reference1.removeValue();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
             return true;
         }
         if (id == R.id.menu_deleteContact) {
-            Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + friendEmail);
-            ref.removeValue();
-            // delete from local database
-            db.deleteFriendByEmailFromLocalDB(friendEmail);
-            finish();
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure to permanently delete this contact?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + friendEmail);
+                            ref.removeValue();
+                            // delete from local database
+                            db.deleteFriendByEmailFromLocalDB(friendEmail);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+            return true;
         }
         return true;
     }

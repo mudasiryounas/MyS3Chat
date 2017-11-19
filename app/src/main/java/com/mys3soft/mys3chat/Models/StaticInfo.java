@@ -11,4 +11,6 @@ public class StaticInfo {
 
     public static String UserCurrentChatFriendEmail = "";
 
+    public static String TypingStatus = "TypingStatus";
+
 }
