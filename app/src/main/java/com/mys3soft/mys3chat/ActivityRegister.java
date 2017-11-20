@@ -42,9 +42,7 @@ public class ActivityRegister extends AppCompatActivity {
             et_FirstName.setError("Enter Firstname");
         } else if (et_LastName.getText().toString().equals("")) {
             et_LastName.setError("Enter Lastname");
-        } else if (et_Email.getText().toString().equals("") || !Tools.isValidEmail(et_Email.getText().toString())
-                || et_Email.getText().toString().contains("_")
-                ) {
+        } else if (et_Email.getText().toString().equals("") || !Tools.isValidEmail(et_Email.getText().toString()) ) {
             et_Email.setError("Enter Valid Email");
         }
         else if (et_Password.getText().toString().equals("")) {

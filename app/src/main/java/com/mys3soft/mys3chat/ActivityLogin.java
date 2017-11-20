@@ -1,5 +1,6 @@
 package com.mys3soft.mys3chat;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -107,6 +108,7 @@ public class ActivityLogin extends AppCompatActivity {
                         editor.putString("FirstName", userObj.getString("FirstName"));
                         editor.putString("LastName", userObj.getString("LastName"));
                         editor.commit();
+                        setResult(Activity.RESULT_OK);
                         finish();
                     } else {
                         pd.hide();

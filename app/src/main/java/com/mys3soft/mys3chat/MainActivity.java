@@ -1,5 +1,6 @@
 package com.mys3soft.mys3chat;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -77,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
         if (user.Email == null) {
             // send to activitylogin
             Intent intent = new Intent(this, ActivityLogin.class);
-            startActivity(intent);
+            startActivityForResult(intent, 100);
+            //startActivity(intent);
         } else {
             startService(new Intent(this, AppService.class));
             // set last msgs
@@ -93,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         user = LocalUserService.getLocalUserFromPreferences(this);
-        if (user.Email != null){
-            if (refUser == null){
+        if (user.Email != null) {
+            if (refUser == null) {
                 refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
             }
         }
@@ -212,4 +214,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            startService(new Intent(getApplicationContext(), AppService.class));
+            FriendListTask t = new FriendListTask();
+            t.execute();
+        }
+    }
 }

@@ -70,9 +70,7 @@ public class ActivityChat extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
-
         List<Message> chatList = db.getChat(user.Email, friendEmail);
-
         for (Message item : chatList) {
             int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
             appendMessage(item.Message, item.SentDate, messageType);
@@ -80,8 +78,10 @@ public class ActivityChat extends AppCompatActivity {
 
         this.setTitle(extras.getString("FriendFullName"));
         final String ENDPOINT = "https://mys3chat.firebaseio.com/messages/";
-        reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
-        reference2 = new Firebase(ENDPOINT + friendEmail + "_" + user.Email);
+//        reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
+//        reference2 = new Firebase(ENDPOINT + friendEmail + "_" + user.Email);
+        reference1 = new Firebase(ENDPOINT + user.Email + "-@@-" + friendEmail);
+        reference2 = new Firebase(ENDPOINT + friendEmail + "-@@-" + user.Email);
         refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
         refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
         reference1.addChildEventListener(new ChildEventListener() {
@@ -98,7 +98,7 @@ public class ActivityChat extends AppCompatActivity {
                     db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
                     // remove from server
                     reference1.child(dataSnapshot.getKey()).removeValue();
-
+                    // keep this for now but later remove it because sender email will never be equal to user email
                     if (senderEmail.equals(user.Email)) {
                         // login user
                         appendMessage(mess, sentDate, 1);
@@ -269,12 +269,15 @@ public class ActivityChat extends AppCompatActivity {
             String sentDate =  dateFormat.format(date);
 
             map.put("SentDate",sentDate);
-            reference1.push().setValue(map);
+           // reference1.push().setValue(map);
             reference2.push().setValue(map);
             refNotMess.push().setValue(map);
 
             // save in local db
             db.saveMessageOnLocakDB(user.Email,friendEmail,message,sentDate);
+
+            // appendmessage
+            appendMessage(message,sentDate,1);
 
         }
     }
@@ -314,14 +317,14 @@ public class ActivityChat extends AppCompatActivity {
                 6f
         );
         lp.setMargins(0, 0, 0, 10);
-        // green user
+        // 1 user
         if (messType == 1) {
             textView.setBackgroundResource(R.drawable.messagebg1);
             textView.setPadding(18, 18, 18, 18);
             lp.gravity = Gravity.RIGHT;
 
         }
-        //  white friend
+        //  2 friend
         else {
             textView.setBackgroundResource(R.drawable.messagebg2);
             textView.setPadding(18, 18, 18, 18);
