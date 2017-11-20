@@ -31,6 +31,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.mys3soft.mys3chat.Models.Message;
 import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
@@ -43,11 +44,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
 public class ActivityChat extends AppCompatActivity {
-
 
     DataContext db = new DataContext(this, null, null, 1);
     EditText messageArea;
@@ -69,6 +70,14 @@ public class ActivityChat extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
+
+        List<Message> chatList = db.getChat(user.Email, friendEmail);
+
+        for (Message item : chatList) {
+            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
+            appendMessage(item.Message, item.SentDate, messageType);
+        }
+
         this.setTitle(extras.getString("FriendFullName"));
         final String ENDPOINT = "https://mys3chat.firebaseio.com/messages/";
         reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
@@ -84,6 +93,12 @@ public class ActivityChat extends AppCompatActivity {
                     String mess = map.get("Message").toString();
                     String senderEmail = map.get("SenderEmail").toString();
                     String sentDate = map.get("SentDate").toString();
+
+                    // save message on local db
+                    db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
+                    // remove from server
+                    reference1.child(dataSnapshot.getKey()).removeValue();
+
                     if (senderEmail.equals(user.Email)) {
                         // login user
                         appendMessage(mess, sentDate, 1);
@@ -105,8 +120,7 @@ public class ActivityChat extends AppCompatActivity {
                 String typingStatus = dataSnapshot.getValue().toString();
                 if (typingStatus.equals("Typing")) {
                     getSupportActionBar().setSubtitle(typingStatus + "...");
-                }
-                else {
+                } else {
                     // check if online
                     getSupportActionBar().setSubtitle("Online");
                 }
@@ -114,9 +128,11 @@ public class ActivityChat extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //layout.removeAllViews();
+                if (dataSnapshot.getKey().equals("TypingStatus")){
+                    getSupportActionBar().setSubtitle("Online");
 
-                layout.removeAllViews();
-
+                }
             }
 
             @Override
@@ -135,7 +151,7 @@ public class ActivityChat extends AppCompatActivity {
                 if (dataSnapshot.getKey().equals("Status")) {
                     // check if subtitle is not Typing
                     CharSequence subTitle = getSupportActionBar().getSubtitle();
-                    if (subTitle != null){
+                    if (subTitle != null) {
                         if (!subTitle.equals("Typing...")) {
                             String friendStatus = dataSnapshot.getValue().toString();
                             if (!friendStatus.equals("Online")) {
@@ -143,14 +159,13 @@ public class ActivityChat extends AppCompatActivity {
                             }
                             getSupportActionBar().setSubtitle(friendStatus);
                         }
-                    }else {
+                    } else {
                         String friendStatus = dataSnapshot.getValue().toString();
                         if (!friendStatus.equals("Online")) {
                             friendStatus = Tools.lastSeenProper(friendStatus);
                         }
                         getSupportActionBar().setSubtitle(friendStatus);
                     }
-
 
 
                 }
@@ -193,7 +208,7 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (messageArea.getText().toString().length() == 0) {
-                    reference2.child(StaticInfo.TypingStatus).setValue("");
+                    reference2.child(StaticInfo.TypingStatus).removeValue();
                 } else if (messageArea.getText().toString().length() == 1) {
                     reference2.child(StaticInfo.TypingStatus).setValue("Typing");
                 }
@@ -251,11 +266,16 @@ public class ActivityChat extends AppCompatActivity {
             // DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
             Date date = new Date();
+            String sentDate =  dateFormat.format(date);
 
-            map.put("SentDate", dateFormat.format(date));
+            map.put("SentDate",sentDate);
             reference1.push().setValue(map);
             reference2.push().setValue(map);
             refNotMess.push().setValue(map);
+
+            // save in local db
+            db.saveMessageOnLocakDB(user.Email,friendEmail,message,sentDate);
+
         }
     }
 
@@ -294,14 +314,14 @@ public class ActivityChat extends AppCompatActivity {
                 6f
         );
         lp.setMargins(0, 0, 0, 10);
-        // green
+        // green user
         if (messType == 1) {
             textView.setBackgroundResource(R.drawable.messagebg1);
             textView.setPadding(18, 18, 18, 18);
             lp.gravity = Gravity.RIGHT;
 
         }
-        //  white
+        //  white friend
         else {
             textView.setBackgroundResource(R.drawable.messagebg2);
             textView.setPadding(18, 18, 18, 18);
@@ -334,9 +354,7 @@ public class ActivityChat extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
         Date date = new Date();
         refUser.child("Status").setValue(dateFormat.format(date));
-       // reference2.child(StaticInfo.TypingStatus).setValue("");
     }
-
 
     @Override
     protected void onStop() {
@@ -349,11 +367,12 @@ public class ActivityChat extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_deleteConservation) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to permanently delete this chat?")
+                    .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            reference1.removeValue();
+                            db.deleteChat(user.Email,friendEmail);
+                            layout.removeAllViews();
                         }
                     })
                     .setNegativeButton(android.R.string.no, null)
@@ -362,7 +381,7 @@ public class ActivityChat extends AppCompatActivity {
         }
         if (id == R.id.menu_deleteContact) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to permanently delete this contact?")
+                    .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
