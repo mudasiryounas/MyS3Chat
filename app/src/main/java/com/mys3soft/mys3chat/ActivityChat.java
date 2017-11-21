@@ -93,17 +93,19 @@ public class ActivityChat extends AppCompatActivity {
                     String mess = map.get("Message").toString();
                     String senderEmail = map.get("SenderEmail").toString();
                     String sentDate = map.get("SentDate").toString();
+                    try{
+                        // remove from server
+                        reference1.child(dataSnapshot.getKey()).removeValue();
+                        // save message on local db
+                        db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
+                        if (senderEmail.equals(user.Email)) {
+                            // login user
+                            appendMessage(mess, sentDate, 1);
+                        } else {
+                            appendMessage(mess, sentDate, 2);
+                        }
+                    }catch (Exception e){
 
-                    // save message on local db
-                    db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
-                    // remove from server
-                    reference1.child(dataSnapshot.getKey()).removeValue();
-                    // keep this for now but later remove it because sender email will never be equal to user email
-                    if (senderEmail.equals(user.Email)) {
-                        // login user
-                        appendMessage(mess, sentDate, 1);
-                    } else {
-                        appendMessage(mess, sentDate, 2);
                     }
                 } else {
                     // show typing status
@@ -208,7 +210,7 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (messageArea.getText().toString().length() == 0) {
-                    reference2.child(StaticInfo.TypingStatus).removeValue();
+                    reference2.child(StaticInfo.TypingStatus).setValue("");
                 } else if (messageArea.getText().toString().length() == 1) {
                     reference2.child(StaticInfo.TypingStatus).setValue("Typing");
                 }
@@ -263,13 +265,12 @@ public class ActivityChat extends AppCompatActivity {
             map.put("FirstName", user.FirstName);
             map.put("LastName", user.LastName);
 
-            // DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
             Date date = new Date();
             String sentDate =  dateFormat.format(date);
 
             map.put("SentDate",sentDate);
-           // reference1.push().setValue(map);
+            //reference1.push().setValue(map);
             reference2.push().setValue(map);
             refNotMess.push().setValue(map);
 
@@ -357,12 +358,16 @@ public class ActivityChat extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
         Date date = new Date();
         refUser.child("Status").setValue(dateFormat.format(date));
+        reference1 = null;
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         StaticInfo.UserCurrentChatFriendEmail = "";
+        reference1 = null;
+
     }
 
     @Override
