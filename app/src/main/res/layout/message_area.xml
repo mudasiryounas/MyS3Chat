@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
+    android:id="@+id/rootLayout"
     android:focusableInTouchMode="true"
     >
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,9 +17,12 @@
         android:textColor="#000000"
         android:inputType="textMultiLine|textCapSentences"
         android:hint="Message..."
+        android:onClick="et_MessageClick"
         android:id="@+id/et_Message"
         android:maxHeight="80dp"
         />
+
+
 
     <ImageView
         android:layout_width="match_parent"

@@ -21,7 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,7 +48,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
+
+
 
 public class ActivityChat extends AppCompatActivity {
 
@@ -222,6 +225,9 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
 
+
+
+
 //        messageArea.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
 //            public void onFocusChange(View v, boolean hasFocus) {
@@ -234,7 +240,15 @@ public class ActivityChat extends AppCompatActivity {
 //            }
 //        });
 
+    }
 
+    public void et_MessageClick(View v){
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     @Override
@@ -406,4 +420,6 @@ public class ActivityChat extends AppCompatActivity {
         }
         return true;
     }
+
+
 }
