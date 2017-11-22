@@ -49,6 +49,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 
 
 public class ActivityChat extends AppCompatActivity {
@@ -96,7 +99,7 @@ public class ActivityChat extends AppCompatActivity {
                     String mess = map.get("Message").toString();
                     String senderEmail = map.get("SenderEmail").toString();
                     String sentDate = map.get("SentDate").toString();
-                    try{
+                    try {
                         // remove from server
                         reference1.child(dataSnapshot.getKey()).removeValue();
                         // save message on local db
@@ -107,7 +110,7 @@ public class ActivityChat extends AppCompatActivity {
                         } else {
                             appendMessage(mess, sentDate, 2);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 } else {
@@ -134,7 +137,7 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 //layout.removeAllViews();
-                if (dataSnapshot.getKey().equals("TypingStatus")){
+                if (dataSnapshot.getKey().equals("TypingStatus")) {
                     getSupportActionBar().setSubtitle("Online");
 
                 }
@@ -225,30 +228,31 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
 
+        View rootView = findViewById(R.id.rootLayout);
+        EmojiconEditText emojiconEditText = (EmojiconEditText) findViewById(R.id.et_Message);
+        ImageView emojiImageView = (ImageView) findViewById(R.id.emoji_btn);
 
+        EmojIconActions emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView,"#1c2764","#e8e8e8","#f4f4f4");
+        emojIcon.ShowEmojIcon();
 
-
-//        messageArea.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                scrollView.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        scrollView.fullScroll(View.FOCUS_DOWN);
-//                    }
-//                });
-//            }
-//        });
-
-    }
-
-    public void et_MessageClick(View v){
-        scrollView.post(new Runnable() {
+        emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
             @Override
-            public void run() {
-                scrollView.fullScroll(View.FOCUS_DOWN);
+            public void onKeyboardOpen() {
+                scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            }
+
+            @Override
+            public void onKeyboardClose() {
+
             }
         });
+
+
     }
 
     @Override
@@ -281,25 +285,29 @@ public class ActivityChat extends AppCompatActivity {
 
             DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
             Date date = new Date();
-            String sentDate =  dateFormat.format(date);
+            String sentDate = dateFormat.format(date);
 
-            map.put("SentDate",sentDate);
+            map.put("SentDate", sentDate);
             //reference1.push().setValue(map);
             reference2.push().setValue(map);
             refNotMess.push().setValue(map);
 
             // save in local db
-            db.saveMessageOnLocakDB(user.Email,friendEmail,message,sentDate);
+            db.saveMessageOnLocakDB(user.Email, friendEmail, message, sentDate);
 
             // appendmessage
-            appendMessage(message,sentDate,1);
+            appendMessage(message, sentDate, 1);
 
         }
     }
 
     public void appendMessage(String mess, String sentDate, int messType) {
 
-        TextView textView = new TextView(ActivityChat.this);
+        EmojiconTextView textView = new EmojiconTextView(this);
+        textView.setEmojiconSize(35);
+
+
+        // TextView textView = new TextView(ActivityChat.this);
 
         Calendar cal = Calendar.getInstance();
         Date todayDate = new Date();
@@ -393,7 +401,7 @@ public class ActivityChat extends AppCompatActivity {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            db.deleteChat(user.Email,friendEmail);
+                            db.deleteChat(user.Email, friendEmail);
                             layout.removeAllViews();
                         }
                     })

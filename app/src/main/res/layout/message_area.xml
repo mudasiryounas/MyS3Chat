@@ -1,37 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    android:id="@+id/rootLayout"
     android:focusableInTouchMode="true"
-    >
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColorHint="#CFD8DC"
-        android:textColor="#000000"
-        android:inputType="textMultiLine|textCapSentences"
-        android:hint="Message..."
-        android:onClick="et_MessageClick"
-        android:id="@+id/et_Message"
-        android:maxHeight="80dp"
-        />
-
+    android:gravity="bottom"
+    android:orientation="horizontal">
 
 
     <ImageView
+        android:id="@+id/emoji_btn"
+        android:layout_width="40dp"
+        android:layout_height="38dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:padding="4dp"
+        android:src="@drawable/smiley" />
+
+
+    <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+        android:id="@+id/et_Message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:padding="4dp"
-        android:src="@android:drawable/ic_menu_send"
-        android:id="@+id/btn_Send"
-        android:onClick="btn_SendMessageClick"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/emoji_btn"
+        android:layout_weight="1"
+        android:hint="Message..."
+        android:inputType="textMultiLine|textCapSentences"
+        android:maxHeight="80dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColorHint="#CFD8DC"
+        emojicon:emojiconSize="28sp"
+
         />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/submit_btn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="55dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_weight="4"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:onClick="btn_SendMessageClick"-->
+        <!--android:src="@android:drawable/ic_menu_send" />-->
+
+    <FrameLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/submit_btn"
+            android:onClick="btn_SendMessageClick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="3dp"
+            android:src="@android:drawable/ic_menu_send" />
+        <ImageView
+            android:src="@drawable/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
 
 </LinearLayout>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +12,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="2dp"
+
     tools:context="com.mys3soft.mys3chat.ActivityChat">
 
 
@@ -17,13 +20,27 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="20">
+        android:layout_weight="20"
+        >
 
         <LinearLayout
             android:id="@+id/layout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!--<hani.momanii.supernova_emoji_library.Helper.EmojiconTextView-->
+                <!--android:id="@+id/textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="26dp"-->
+                <!--android:text="Hello Emojis!"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+                <!--android:textColor="#000000"-->
+                <!--emojicon:emojiconSize="45sp"-->
+                <!--emojicon:emojiconUseSystemDefault="true" />-->
 
             <!--<TextView-->
             <!--android:id="@+id/textView"-->
@@ -59,7 +76,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:gravity="bottom" />
+        android:gravity="bottom"
+        />
 
 
 </LinearLayout>

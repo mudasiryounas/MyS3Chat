@@ -7,8 +7,8 @@ android {
         applicationId "com.mys3soft.mys3chat"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 21
-        versionName "3.1"
+        versionCode 22
+        versionName "3.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,6 +26,10 @@ android {
 
 }
 
+repositories {
+    maven { url "https://dl.bintray.com/hani-momanii/maven"}
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -40,5 +44,7 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
     testCompile 'junit:junit:4.12'
+
+    compile 'hani.momanii.supernova_emoji_library:supernova-emoji-library:0.0.2'
 
 }
