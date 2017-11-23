@@ -159,9 +159,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-
+            user = LocalUserService.getLocalUserFromPreferences(getApplicationContext());
             IFireBaseAPI api = Tools.makeRetroFitApi();
-            Call<String> call = api.getAllFriendListAsJsonString();
+            Call<String> call = api.getUserFriendsListAsJsonString(StaticInfo.FriendsURL + "/" + user.Email + ".json");
             try {
                 return call.execute().body();
             } catch (IOException e) {
@@ -176,9 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 user = LocalUserService.getLocalUserFromPreferences(getApplicationContext());
-                JSONObject jsonObjectList = new JSONObject(jsonListString);
+                //JSONObject jsonObjectList = new JSONObject(jsonListString);
                 List<User> friendList = new ArrayList<>();
-                JSONObject userFriendTree = jsonObjectList.getJSONObject(user.Email);
+               // JSONObject userFriendTree = jsonObjectList.getJSONObject(user.Email);
+                JSONObject userFriendTree = new JSONObject(jsonListString);
                 for (Iterator iterator = userFriendTree.keys(); iterator.hasNext(); ) {
                     String key = (String) iterator.next();
                     User friend = new User();

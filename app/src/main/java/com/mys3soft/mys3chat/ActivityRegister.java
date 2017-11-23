@@ -41,6 +41,7 @@ public class ActivityRegister extends AppCompatActivity {
     EditText et_Email, et_Password, et_FirstName, et_LastName;
     Button btn_Register;
     ProgressDialog pd;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +71,10 @@ public class ActivityRegister extends AppCompatActivity {
         } else if (et_Password.getText().toString().equals("")) {
             et_Password.setError("Enter Password");
         } else {
-
-            // check if user already exists
+            email = Tools.encodeString(et_Email.getText().toString());
             AllUsersTask t = new AllUsersTask();
             t.execute();
-
-
         }
-
     }
 
     public class AllUsersTask extends AsyncTask<Void, Void, String> {
@@ -91,7 +88,7 @@ public class ActivityRegister extends AppCompatActivity {
         protected String doInBackground(Void... params) {
 
             IFireBaseAPI api = Tools.makeRetroFitApi();
-            Call<String> call = api.getAllFriendListAsJsonString();
+            Call<String> call = api.getSingleUserByEmail(StaticInfo.UsersURL + "/" + email + ".json");
             try {
                 return call.execute().body();
             } catch (IOException e) {
@@ -102,12 +99,9 @@ public class ActivityRegister extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String jsonListString) {
-
+        protected void onPostExecute(String jsonString) {
             try {
-                String email = Tools.encodeString(et_Email.getText().toString());
-                JSONObject jsonObjectList = new JSONObject(jsonListString);
-                if (!jsonObjectList.has(email)) {
+                if (jsonString.trim().equals("null") ) {
                     Firebase firebase = new Firebase(StaticInfo.UsersURL);
                     firebase.child(email).child("FirstName").setValue(et_FirstName.getText().toString());
                     firebase.child(email).child("LastName").setValue(et_LastName.getText().toString());
@@ -119,13 +113,11 @@ public class ActivityRegister extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Signup Success", Toast.LENGTH_SHORT).show();
                     pd.hide();
                     finish();
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Email already exists", Toast.LENGTH_SHORT).show();
                     pd.hide();
                 }
-
-
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 pd.hide();
                 e.printStackTrace();
             }

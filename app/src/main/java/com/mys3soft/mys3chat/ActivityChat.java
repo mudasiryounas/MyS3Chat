@@ -55,7 +55,6 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 
 
 public class ActivityChat extends AppCompatActivity {
-
     DataContext db = new DataContext(this, null, null, 1);
     EditText messageArea;
     ScrollView scrollView;
@@ -64,7 +63,6 @@ public class ActivityChat extends AppCompatActivity {
     User user;
     String friendEmail;
     Firebase refUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -232,12 +230,13 @@ public class ActivityChat extends AppCompatActivity {
         EmojiconEditText emojiconEditText = (EmojiconEditText) findViewById(R.id.et_Message);
         ImageView emojiImageView = (ImageView) findViewById(R.id.emoji_btn);
 
-        EmojIconActions emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView,"#1c2764","#e8e8e8","#f4f4f4");
+        final EmojIconActions emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView,"#1c2764","#e8e8e8","#f4f4f4");
         emojIcon.ShowEmojIcon();
 
         emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
             @Override
             public void onKeyboardOpen() {
+
                 scrollView.post(new Runnable() {
                     @Override
                     public void run() {

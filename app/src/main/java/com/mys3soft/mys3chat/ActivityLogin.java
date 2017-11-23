@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
@@ -39,6 +40,7 @@ public class ActivityLogin extends AppCompatActivity {
     Button btn_Login;
     public static final String ENDPOINT = "https://mys3chat.firebaseio.com";
     ProgressDialog pd;
+    String email;
 
 
     @Override
@@ -65,6 +67,7 @@ public class ActivityLogin extends AppCompatActivity {
             pd = new ProgressDialog(this);
             pd.setMessage("Loading...");
             pd.show();
+            email = Tools.encodeString(et_Email.getText().toString());
             LoginTask t = new LoginTask();
             t.execute();
         }
@@ -81,7 +84,8 @@ public class ActivityLogin extends AppCompatActivity {
                     .build();
 
             IFireBaseAPI api = retrofit.create(IFireBaseAPI.class);
-            Call<String> call = api.getAllUsersAsJsonString();
+           // Call<String> call = api.getAllUsersAsJsonString();
+            Call<String> call = api.getSingleUserByEmail(StaticInfo.UsersURL + "/" + email + ".json");
             try {
                 return call.execute().body();
             } catch (IOException e) {
@@ -93,13 +97,11 @@ public class ActivityLogin extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String jsonList) {
-            String email = Tools.encodeString(et_Email.getText().toString());
-            String pass = et_Password.getText().toString();
+        protected void onPostExecute(String jsonString) {
             try {
-                JSONObject obj = new JSONObject(jsonList);
-                if (obj.has(email)) {
-                    JSONObject userObj = obj.getJSONObject(email);
+                if (!jsonString.trim().equals("null")) {
+                    JSONObject userObj = new JSONObject(jsonString);
+                    String pass = et_Password.getText().toString();
                     if (userObj.getString("Password").equals(pass)) {
                         pd.hide();
                         SharedPreferences pref = getApplicationContext().getSharedPreferences("LocalUser", 0);
