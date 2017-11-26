@@ -63,6 +63,8 @@ public class ActivityChat extends AppCompatActivity {
     private int pageNo = 2;
     private FloatingActionButton submit_btn;
 
+    private ChildEventListener reference1Listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,20 +74,7 @@ public class ActivityChat extends AppCompatActivity {
         layout = (LinearLayout) findViewById(R.id.layout1);
         user = LocalUserService.getLocalUserFromPreferences(this);
         Firebase.setAndroidContext(this);
-        Bundle extras = getIntent().getExtras();
-        friendEmail = extras.getString("FriendEmail");
-        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
-        for (Message item : chatList) {
-            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
-            appendMessage(item.Message, item.SentDate, messageType, false);
-        }
-
-        this.setTitle(extras.getString("FriendFullName"));
-        reference1 = new Firebase(StaticInfo.MessagesEndPoint +"/"+ user.Email + "-@@-" + friendEmail);
-        reference2 = new Firebase(StaticInfo.MessagesEndPoint +"/" + friendEmail + "-@@-" + user.Email);
-        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
-        refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
-        reference1.addChildEventListener(new ChildEventListener() {
+        reference1Listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -147,7 +136,20 @@ public class ActivityChat extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        };
+        Bundle extras = getIntent().getExtras();
+        friendEmail = extras.getString("FriendEmail");
+        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
+        for (Message item : chatList) {
+            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
+            appendMessage(item.Message, item.SentDate, messageType, false);
+        }
+
+        this.setTitle(extras.getString("FriendFullName"));
+        reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
+        reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
+        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
+        refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
         refFriend.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -216,7 +218,7 @@ public class ActivityChat extends AppCompatActivity {
                 } else if (messageArea.getText().toString().length() == 1) {
                     reference2.child(StaticInfo.TypingStatus).setValue("Typing");
                     // change color here
-                  //  submit_btn.setColorFilter(R.color.colorPrimary);
+                    //  submit_btn.setColorFilter(R.color.colorPrimary);
 
                 }
             }
@@ -284,76 +286,62 @@ public class ActivityChat extends AppCompatActivity {
         });
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         // update status to online
-        if (reference1 == null ){
-            reference1 = new Firebase(StaticInfo.MessagesEndPoint +"/"+ user.Email + "-@@-" + friendEmail);
-            reference1.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                    if (!dataSnapshot.getKey().equals(StaticInfo.TypingStatus)) {
-                        Map map = dataSnapshot.getValue(Map.class);
-                        String mess = map.get("Message").toString();
-                        String senderEmail = map.get("SenderEmail").toString();
-                        String sentDate = map.get("SentDate").toString();
-                        try {
-                            // remove from server
-                            reference1.child(dataSnapshot.getKey()).removeValue();
-                            // save message on local db
-                            db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
-                            if (senderEmail.equals(user.Email)) {
-                                // login user
-                                appendMessage(mess, sentDate, 1, false);
-                            } else {
-                                appendMessage(mess, sentDate, 2, false);
-                            }
-                        } catch (Exception e) {
-
-                        }
-                    } else {
-                        // show typing status
-                        String typingStatus = dataSnapshot.getValue().toString();
-                        if (typingStatus.equals("Typing")) {
-                            getSupportActionBar().setSubtitle(typingStatus + "...");
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    String typingStatus = dataSnapshot.getValue().toString();
-                    if (typingStatus.equals("Typing")) {
-                        getSupportActionBar().setSubtitle(typingStatus + "...");
-                    } else {
-                        // check if online
-                        getSupportActionBar().setSubtitle("Online");
-                    }
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    //layout.removeAllViews();
-                    if (dataSnapshot.getKey().equals("TypingStatus")) {
-                        getSupportActionBar().setSubtitle("Online");
-
-                    }
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-        }
         refUser.child("Status").setValue("Online");
+        reference1.addChildEventListener(reference1Listener);
     }
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reference1.removeEventListener(reference1Listener);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        StaticInfo.UserCurrentChatFriendEmail = friendEmail;
+        refUser.child("Status").setValue("Online");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        StaticInfo.UserCurrentChatFriendEmail = "";
+        reference1.removeEventListener(reference1Listener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StaticInfo.UserCurrentChatFriendEmail = "";
+        // set last seen
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+        Date date = new Date();
+        refUser.child("Status").setValue(dateFormat.format(date));
+        reference1.removeEventListener(reference1Listener);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle extras = intent.getExtras();
+        layout.removeAllViews();
+        friendEmail = extras.getString("FriendEmail");
+        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
+        for (Message item : chatList) {
+            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
+            appendMessage(item.Message, item.SentDate, messageType, false);
+        }
+
+        StaticInfo.UserCurrentChatFriendEmail = friendEmail;
+        reference1.removeEventListener(reference1Listener);
+        reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
+        reference1.addChildEventListener(reference1Listener);
+
+    }
 
     public void btn_SendMessageClick(View view) {
 
@@ -429,30 +417,10 @@ public class ActivityChat extends AppCompatActivity {
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_chat, menu);
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        StaticInfo.UserCurrentChatFriendEmail = "";
-        // set last seen
-        DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
-        Date date = new Date();
-        refUser.child("Status").setValue(dateFormat.format(date));
-        reference1 = null;
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        StaticInfo.UserCurrentChatFriendEmail = "";
-        reference1 = null;
     }
 
     @Override
@@ -493,21 +461,22 @@ public class ActivityChat extends AppCompatActivity {
         if (id == R.id.menu_friendProfile) {
             Intent intent = new Intent(ActivityChat.this, ActivityFriendProfile.class);
             intent.putExtra("Email", friendEmail);
-           startActivityForResult(intent,StaticInfo.ChatAciviityRequestCode);
+            startActivityForResult(intent, StaticInfo.ChatAciviityRequestCode);
         }
         return true;
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == StaticInfo.ChatAciviityRequestCode && resultCode == Activity.RESULT_OK){
-           User updatedFriend = db.getFriendByEmailFromLocalDB(friendEmail);
-         // setTitle(updatedFriend.FirstName);
+        if (requestCode == StaticInfo.ChatAciviityRequestCode && resultCode == Activity.RESULT_OK) {
+            User updatedFriend = db.getFriendByEmailFromLocalDB(friendEmail);
+            // setTitle(updatedFriend.FirstName);
             getSupportActionBar().setTitle(updatedFriend.FirstName);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }

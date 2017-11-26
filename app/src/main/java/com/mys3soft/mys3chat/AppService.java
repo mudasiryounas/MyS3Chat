@@ -99,7 +99,7 @@ public class AppService extends Service {
         Intent i = new Intent(getApplicationContext(), ActivityChat.class);
         i.putExtra("FriendEmail", friendEmail);
         i.putExtra("FriendFullName", friendFullName);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_ONE_SHOT);
         not.setContentIntent(pendingIntent);
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         not.setDefaults(Notification.DEFAULT_ALL);
