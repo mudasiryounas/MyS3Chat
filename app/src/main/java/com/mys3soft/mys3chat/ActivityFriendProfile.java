@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -67,13 +68,16 @@ public class ActivityFriendProfile extends AppCompatActivity {
 
         // check if already friends otherwise get info from server
         User friend = db.getFriendByEmailFromLocalDB(friendEmail);
-        if ( friend.Email == null){
+        if (friend.Email == null) {
+            ImageButton btn_EditName = (ImageButton) findViewById(R.id.btn_EditName);
+            btn_EditName.setVisibility(View.INVISIBLE);
             FindFriendsTask t = new FindFriendsTask();
             t.execute();
-        }else {
+        } else {
             tv_FriendFullName.setText(Tools.toProperName(friend.FirstName) + " " + Tools.toProperName(friend.LastName));
             btn_AddFriend.setEnabled(false);
             btn_AddFriend.setText("Connected");
+
 
         }
 
@@ -120,6 +124,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
             }
         }
     }
+
     public void btn_SendFriendRequestClick(View view) {
         Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/friendrequests");
         Map<String, String> map = new HashMap<>();
@@ -131,7 +136,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
         btn_AddFriend.setText("Request Sent");
     }
 
-    public void btn_EditNameClick(View view){
+    public void btn_EditNameClick(View view) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Set display name");
@@ -143,7 +148,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newName = et.getText().toString();
-                db.setPreferedDisplayName(friendEmail,newName);
+                db.setPreferedDisplayName(friendEmail, newName);
                 tv_FriendFullName.setText(newName);
                 setResult(Activity.RESULT_OK);
             }

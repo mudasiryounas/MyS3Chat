@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.provider.ContactsContract;
 import android.support.v7.app.NotificationCompat;
 
 import com.firebase.client.ChildEventListener;
@@ -16,6 +17,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
+import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.LocalUserService;
 import com.mys3soft.mys3chat.Services.Tools;
 
@@ -94,16 +96,19 @@ public class AppService extends Service {
         not.setSmallIcon(R.mipmap.ic_launcher_round);
         not.setTicker("New Message");
         not.setWhen(System.currentTimeMillis());
-        not.setContentTitle(friendFullName);
+        DataContext db = new DataContext(getApplicationContext(), null, null, 1);
+        User frnd = db.getFriendByEmailFromLocalDB(friendEmail);
+        not.setContentTitle(frnd.FirstName + " " + frnd.LastName);
         not.setContentText(mess);
         Intent i = new Intent(getApplicationContext(), ActivityChat.class);
         i.putExtra("FriendEmail", friendEmail);
-        i.putExtra("FriendFullName", friendFullName);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_ONE_SHOT);
+        i.putExtra("FriendFullName", frnd.FirstName + " " + frnd.LastName);
+        int uniqueID = Tools.createUniqueIdPerUser(friendEmail);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), uniqueID, i, PendingIntent.FLAG_UPDATE_CURRENT);
         not.setContentIntent(pendingIntent);
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         not.setDefaults(Notification.DEFAULT_ALL);
-        nm.notify(Tools.createUniqueIdPerUser(friendEmail), not.build());
+        nm.notify(uniqueID, not.build());
 
     }
 }

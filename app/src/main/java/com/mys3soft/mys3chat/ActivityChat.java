@@ -64,6 +64,7 @@ public class ActivityChat extends AppCompatActivity {
     private FloatingActionButton submit_btn;
 
     private ChildEventListener reference1Listener;
+    private ChildEventListener refFriendListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,20 +138,7 @@ public class ActivityChat extends AppCompatActivity {
 
             }
         };
-        Bundle extras = getIntent().getExtras();
-        friendEmail = extras.getString("FriendEmail");
-        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
-        for (Message item : chatList) {
-            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
-            appendMessage(item.Message, item.SentDate, messageType, false);
-        }
-
-        this.setTitle(extras.getString("FriendFullName"));
-        reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
-        reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
-        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
-        refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
-        refFriend.addChildEventListener(new ChildEventListener() {
+        refFriendListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getKey().equals("Status")) {
@@ -200,7 +188,21 @@ public class ActivityChat extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        };
+        Bundle extras = getIntent().getExtras();
+        friendEmail = extras.getString("FriendEmail");
+        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
+        for (Message item : chatList) {
+            int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
+            appendMessage(item.Message, item.SentDate, messageType, false);
+        }
+
+        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+        reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
+        reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
+        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
+        refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
+        refFriend.addChildEventListener(refFriendListener);
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
         submit_btn = (FloatingActionButton) findViewById(R.id.submit_btn);
@@ -277,7 +279,8 @@ public class ActivityChat extends AppCompatActivity {
         super.onStart();
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
-        this.setTitle(extras.getString("FriendFullName"));
+        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+
         scrollView.post(new Runnable() {
             @Override
             public void run() {
@@ -309,8 +312,8 @@ public class ActivityChat extends AppCompatActivity {
         super.onStop();
         StaticInfo.UserCurrentChatFriendEmail = "";
         reference1.removeEventListener(reference1Listener);
+        reference2.child(StaticInfo.TypingStatus).setValue("");
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -320,6 +323,7 @@ public class ActivityChat extends AppCompatActivity {
         Date date = new Date();
         refUser.child("Status").setValue(dateFormat.format(date));
         reference1.removeEventListener(reference1Listener);
+        reference2.child(StaticInfo.TypingStatus).setValue("");
     }
 
     @Override
@@ -340,6 +344,12 @@ public class ActivityChat extends AppCompatActivity {
         reference1.removeEventListener(reference1Listener);
         reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
         reference1.addChildEventListener(reference1Listener);
+
+        refFriend.removeEventListener(refFriendListener);
+        refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
+        refFriend.addChildEventListener(refFriendListener);
+
+        reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
 
     }
 
@@ -471,7 +481,6 @@ public class ActivityChat extends AppCompatActivity {
 
         if (requestCode == StaticInfo.ChatAciviityRequestCode && resultCode == Activity.RESULT_OK) {
             User updatedFriend = db.getFriendByEmailFromLocalDB(friendEmail);
-            // setTitle(updatedFriend.FirstName);
             getSupportActionBar().setTitle(updatedFriend.FirstName);
         }
 
