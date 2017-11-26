@@ -17,20 +17,22 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="20">
 
 
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="20">
+            android:layout_height="match_parent">
+
 
             <LinearLayout
                 android:id="@+id/layout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
 
                 <!--<hani.momanii.supernova_emoji_library.Helper.EmojiconTextView-->
                 <!--android:id="@+id/textView"-->
@@ -46,7 +48,6 @@
                 <!--emojicon:emojiconUseSystemDefault="true" />-->
 
                 <!--<TextView-->
-                <!--android:id="@+id/textView"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_gravity="right"-->
@@ -54,7 +55,7 @@
                 <!--android:layout_weight="6"-->
                 <!--android:background="@drawable/messagebg1"-->
                 <!--android:padding="18dp"-->
-                <!--android:text="Test"-->
+                <!--android:text="Test bottom"-->
                 <!--android:textColor="#000" />-->
 
 
@@ -66,7 +67,7 @@
                 <!--android:background="@drawable/messagebg2"-->
                 <!--android:gravity="left"-->
                 <!--android:padding="18dp"-->
-                <!--android:text="Test"-->
+                <!--android:text="Test bottom"-->
                 <!--android:textColor="#000" />-->
 
 
@@ -77,12 +78,10 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-
     <include
         layout="@layout/message_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom" />
-
 
 </LinearLayout>

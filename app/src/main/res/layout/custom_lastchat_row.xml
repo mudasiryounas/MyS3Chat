@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_lastChat_HiddenEmail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_lastChat_FriendFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name"
+            android:textColor="#181717"
+            android:textSize="30px" />
+
+        <TextView
+            android:id="@+id/tv_lastChat_MessageDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sent Date"
+            android:textColor="#807474"
+            android:textSize="20px"
+            android:gravity="right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
+            android:id="@+id/tv_lastChat_Message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message..."
+            android:textColor="#565151"
+            app:emojiconSize="20px"
+            android:textSize="20px"  />
+
+    </LinearLayout>
+
+
+</LinearLayout>

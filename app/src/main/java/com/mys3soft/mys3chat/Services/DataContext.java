@@ -145,8 +145,9 @@ public class DataContext extends SQLiteOpenHelper {
         List<Message> messageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         try {
+            int limit = (5 * pageNo) + 45;
             String whereCondition = "((FromMail = '" + userMail + "' and ToMail='" + friendMail + "') or (ToMail = '" + userMail + "' and FromMail='" + friendMail + "'))";
-            String query = "select * from ( select rowid, * from Messages where "+whereCondition+ " order by rowid desc limit "+50*pageNo+") order by rowid ";
+            String query = "select * from ( select rowid, * from Messages where " + whereCondition + " order by rowid desc limit "+limit+")  order by rowid ";
             Cursor c = db.rawQuery(query, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {

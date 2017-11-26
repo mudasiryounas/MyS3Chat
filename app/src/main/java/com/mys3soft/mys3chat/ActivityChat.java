@@ -70,7 +70,7 @@ public class ActivityChat extends AppCompatActivity {
         List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
         for (Message item : chatList) {
             int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
-            appendMessage(item.Message, item.SentDate, messageType);
+            appendMessage(item.Message, item.SentDate, messageType, false);
         }
 
         this.setTitle(extras.getString("FriendFullName"));
@@ -97,9 +97,9 @@ public class ActivityChat extends AppCompatActivity {
                         db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
                         if (senderEmail.equals(user.Email)) {
                             // login user
-                            appendMessage(mess, sentDate, 1);
+                            appendMessage(mess, sentDate, 1, false);
                         } else {
-                            appendMessage(mess, sentDate, 2);
+                            appendMessage(mess, sentDate, 2, false);
                         }
                     } catch (Exception e) {
 
@@ -250,16 +250,11 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 List<Message> chatList = db.getChat(user.Email, friendEmail, pageNo);
+                layout.removeAllViews();
                 for (Message item : chatList) {
                     int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
-                    appendMessage(item.Message, item.SentDate, messageType);
+                    appendMessage(item.Message, item.SentDate, messageType, true);
                 }
-                scrollView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollView.fullScroll(View.FOCUS_UP);
-                    }
-                });
                 swipeRefreshLayout.setRefreshing(false);
                 pageNo++;
             }
@@ -308,12 +303,12 @@ public class ActivityChat extends AppCompatActivity {
             db.saveMessageOnLocakDB(user.Email, friendEmail, message, sentDate);
 
             // appendmessage
-            appendMessage(message, sentDate, 1);
+            appendMessage(message, sentDate, 1, false);
 
         }
     }
 
-    public void appendMessage(String mess, String sentDate, int messType) {
+    public void appendMessage(String mess, String sentDate, int messType, final boolean scrollUp) {
 
         EmojiconTextView textView = new EmojiconTextView(this);
         textView.setEmojiconSize(35);
@@ -350,10 +345,14 @@ public class ActivityChat extends AppCompatActivity {
         scrollView.post(new Runnable() {
             @Override
             public void run() {
-                scrollView.fullScroll(View.FOCUS_DOWN);
+                if (scrollUp)
+                    scrollView.fullScroll(View.FOCUS_UP);
+                else
+                    scrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
