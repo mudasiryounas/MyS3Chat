@@ -201,7 +201,7 @@ public class ActivityChat extends AppCompatActivity {
         reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
         reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
         refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
-        refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
+        refNotMess = new Firebase(StaticInfo.NotificationEndPoint + "/" + friendEmail);
         refFriend.addChildEventListener(refFriendListener);
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
@@ -314,6 +314,7 @@ public class ActivityChat extends AppCompatActivity {
         reference1.removeEventListener(reference1Listener);
         reference2.child(StaticInfo.TypingStatus).setValue("");
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

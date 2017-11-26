@@ -34,10 +34,9 @@ public class AppService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         Firebase.setAndroidContext(getApplicationContext());
         User user = LocalUserService.getLocalUserFromPreferences(getApplicationContext());
-        final Firebase reference = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + user.Email);
+        final Firebase reference = new Firebase(StaticInfo.NotificationEndPoint + "/" + user.Email);
         reference.addChildEventListener(
                 new ChildEventListener() {
                     @Override
@@ -45,20 +44,19 @@ public class AppService extends Service {
                         Map map = dataSnapshot.getValue(Map.class);
                         String mess = map.get("Message").toString();
                         String senderEmail = map.get("SenderEmail").toString();
-                        String friendFullName = Tools.toProperName(map.get("FirstName").toString()) + " " + Tools.toProperName(
+                        String senderFullName = Tools.toProperName(map.get("FirstName").toString()) + " " + Tools.toProperName(
                                 map.get("LastName").toString());
-
+                        int notificationType = 1; // Message
+                        notificationType = map.get("NotificationType") == null ? 1 : Integer.parseInt(map.get("NotificationType").toString());
                         // check if user is on chat activity with senderEmail
                         if (!StaticInfo.UserCurrentChatFriendEmail.equals(senderEmail)) {
-                            notifyMessage(senderEmail, friendFullName, mess);
+                            notifyUser(senderEmail,senderFullName, mess, notificationType);
                             // remove notification
                             reference.child(dataSnapshot.getKey()).removeValue();
                         } else {
                             reference.child(dataSnapshot.getKey()).removeValue();
                         }
-
                     }
-
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
@@ -90,19 +88,30 @@ public class AppService extends Service {
         sendBroadcast(new Intent("com.mys3soft.mys3chat.restartservice"));
     }
 
-    private void notifyMessage(String friendEmail, String friendFullName, String mess) {
+    private void notifyUser(String friendEmail, String senderFullName, String mess, int notificationType) {
         NotificationCompat.Builder not = new NotificationCompat.Builder(getApplicationContext());
         not.setAutoCancel(true);
         not.setSmallIcon(R.mipmap.ic_launcher_round);
         not.setTicker("New Message");
         not.setWhen(System.currentTimeMillis());
-        DataContext db = new DataContext(getApplicationContext(), null, null, 1);
-        User frnd = db.getFriendByEmailFromLocalDB(friendEmail);
-        not.setContentTitle(frnd.FirstName + " " + frnd.LastName);
         not.setContentText(mess);
-        Intent i = new Intent(getApplicationContext(), ActivityChat.class);
+        Intent i;
+        // Message
+        if (notificationType == 1){
+            DataContext db = new DataContext(getApplicationContext(), null, null, 1);
+            User frnd = db.getFriendByEmailFromLocalDB(friendEmail);
+            not.setContentTitle(frnd.FirstName + " " + frnd.LastName);
+            i = new Intent(getApplicationContext(), ActivityChat.class);
+            i.putExtra("FriendFullName", frnd.FirstName + " " + frnd.LastName);
+        }
+        // Contact Request
+        else if (notificationType == 2){
+            i = new Intent(getApplicationContext(), ActivityNotifications.class);
+            not.setContentTitle(senderFullName);
+        }else {
+            i = null;
+        }
         i.putExtra("FriendEmail", friendEmail);
-        i.putExtra("FriendFullName", frnd.FirstName + " " + frnd.LastName);
         int uniqueID = Tools.createUniqueIdPerUser(friendEmail);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), uniqueID, i, PendingIntent.FLAG_UPDATE_CURRENT);
         not.setContentIntent(pendingIntent);

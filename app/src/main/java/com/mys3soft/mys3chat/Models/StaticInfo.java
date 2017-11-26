@@ -10,6 +10,8 @@ public class StaticInfo {
     public static String UserCurrentChatFriendEmail = "";
     public static String TypingStatus = "TypingStatus";
 
+    public static String NotificationEndPoint = "https://mys3chat.firebaseio.com/notifications";
+
     public static int ChatAciviityRequestCode = 101;
 
 }

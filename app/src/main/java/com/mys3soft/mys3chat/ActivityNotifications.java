@@ -57,10 +57,9 @@ public class ActivityNotifications extends AppCompatActivity {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Map map = dataSnapshot.getValue(Map.class);
-                        String senderEmail = map.get("Email").toString();
                         String firstName = map.get("FirstName").toString();
                         String lastName = map.get("LastName").toString();
-                        final String key = (String) dataSnapshot.getKey();
+                        final String key = dataSnapshot.getKey();
                         NotificationModel not = new NotificationModel();
                         not.FirstName = firstName;
                         not.LastName = lastName;

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
 import com.mys3soft.mys3chat.Services.IFireBaseAPI;
@@ -127,13 +128,20 @@ public class ActivityFriendProfile extends AppCompatActivity {
 
     public void btn_SendFriendRequestClick(View view) {
         Firebase firebase = new Firebase("https://mys3chat.firebaseio.com/friendrequests");
+        Firebase notifRef = new Firebase(StaticInfo.NotificationEndPoint + "/" + friendEmail);
         Map<String, String> map = new HashMap<>();
-        map.put("Email", user.Email);
         map.put("FirstName", user.FirstName);
         map.put("LastName", user.LastName);
         firebase.child(Tools.encodeString(f.Email)).child(Tools.encodeString(user.Email)).setValue(map);
         btn_AddFriend.setEnabled(false);
         btn_AddFriend.setText("Request Sent");
+
+        map.put("SenderEmail", user.Email);
+        map.put("Message", "Pending contact request");
+        map.put("NotificationType", "2");
+
+        notifRef.push().setValue(map);
+
     }
 
     public void btn_EditNameClick(View view) {
