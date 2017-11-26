@@ -1,8 +1,12 @@
 package com.mys3soft.mys3chat;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -55,6 +61,7 @@ public class ActivityChat extends AppCompatActivity {
     String friendEmail;
     Firebase refUser;
     private int pageNo = 2;
+    private FloatingActionButton submit_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +81,8 @@ public class ActivityChat extends AppCompatActivity {
         }
 
         this.setTitle(extras.getString("FriendFullName"));
-        final String ENDPOINT = "https://mys3chat.firebaseio.com/messages/";
-//        reference1 = new Firebase(ENDPOINT + user.Email + "_" + friendEmail);
-//        reference2 = new Firebase(ENDPOINT + friendEmail + "_" + user.Email);
-        reference1 = new Firebase(ENDPOINT + user.Email + "-@@-" + friendEmail);
-        reference2 = new Firebase(ENDPOINT + friendEmail + "-@@-" + user.Email);
+        reference1 = new Firebase(StaticInfo.MessagesEndPoint +"/"+ user.Email + "-@@-" + friendEmail);
+        reference2 = new Firebase(StaticInfo.MessagesEndPoint +"/" + friendEmail + "-@@-" + user.Email);
         refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
         refNotMess = new Firebase("https://mys3chat.firebaseio.com/messagenotificatins/" + friendEmail);
         reference1.addChildEventListener(new ChildEventListener() {
@@ -197,6 +201,7 @@ public class ActivityChat extends AppCompatActivity {
         });
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);
+        submit_btn = (FloatingActionButton) findViewById(R.id.submit_btn);
 
         messageArea.addTextChangedListener(new TextWatcher() {
             @Override
@@ -210,6 +215,9 @@ public class ActivityChat extends AppCompatActivity {
                     reference2.child(StaticInfo.TypingStatus).setValue("");
                 } else if (messageArea.getText().toString().length() == 1) {
                     reference2.child(StaticInfo.TypingStatus).setValue("Typing");
+                    // change color here
+                  //  submit_btn.setColorFilter(R.color.colorPrimary);
+
                 }
             }
 
@@ -276,8 +284,76 @@ public class ActivityChat extends AppCompatActivity {
         });
         StaticInfo.UserCurrentChatFriendEmail = friendEmail;
         // update status to online
+        if (reference1 == null ){
+            reference1 = new Firebase(StaticInfo.MessagesEndPoint +"/"+ user.Email + "-@@-" + friendEmail);
+            reference1.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    if (!dataSnapshot.getKey().equals(StaticInfo.TypingStatus)) {
+                        Map map = dataSnapshot.getValue(Map.class);
+                        String mess = map.get("Message").toString();
+                        String senderEmail = map.get("SenderEmail").toString();
+                        String sentDate = map.get("SentDate").toString();
+                        try {
+                            // remove from server
+                            reference1.child(dataSnapshot.getKey()).removeValue();
+                            // save message on local db
+                            db.saveMessageOnLocakDB(senderEmail, user.Email, mess, sentDate);
+                            if (senderEmail.equals(user.Email)) {
+                                // login user
+                                appendMessage(mess, sentDate, 1, false);
+                            } else {
+                                appendMessage(mess, sentDate, 2, false);
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    } else {
+                        // show typing status
+                        String typingStatus = dataSnapshot.getValue().toString();
+                        if (typingStatus.equals("Typing")) {
+                            getSupportActionBar().setSubtitle(typingStatus + "...");
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    String typingStatus = dataSnapshot.getValue().toString();
+                    if (typingStatus.equals("Typing")) {
+                        getSupportActionBar().setSubtitle(typingStatus + "...");
+                    } else {
+                        // check if online
+                        getSupportActionBar().setSubtitle("Online");
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    //layout.removeAllViews();
+                    if (dataSnapshot.getKey().equals("TypingStatus")) {
+                        getSupportActionBar().setSubtitle("Online");
+
+                    }
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+        }
         refUser.child("Status").setValue("Online");
     }
+
+
 
     public void btn_SendMessageClick(View view) {
 
@@ -377,7 +453,6 @@ public class ActivityChat extends AppCompatActivity {
         super.onStop();
         StaticInfo.UserCurrentChatFriendEmail = "";
         reference1 = null;
-
     }
 
     @Override
@@ -414,8 +489,25 @@ public class ActivityChat extends AppCompatActivity {
                     .show();
             return true;
         }
+
+        if (id == R.id.menu_friendProfile) {
+            Intent intent = new Intent(ActivityChat.this, ActivityFriendProfile.class);
+            intent.putExtra("Email", friendEmail);
+           startActivityForResult(intent,StaticInfo.ChatAciviityRequestCode);
+        }
         return true;
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == StaticInfo.ChatAciviityRequestCode && resultCode == Activity.RESULT_OK){
+           User updatedFriend = db.getFriendByEmailFromLocalDB(friendEmail);
+         // setTitle(updatedFriend.FirstName);
+            getSupportActionBar().setTitle(updatedFriend.FirstName);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

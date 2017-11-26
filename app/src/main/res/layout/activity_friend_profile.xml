@@ -1,35 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="4dp"
     tools:context="com.mys3soft.mys3chat.ActivityFriendProfile">
 
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dip"
-        android:textSize="20dp"
-        android:layout_marginLeft="20dip"
-        android:layout_marginBottom="20dip"
-        android:id="@+id/tv_FriendFullName_L_FriendProfile"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-        />
+
+
+        <TextView
+            android:id="@+id/tv_FriendFullName_L_FriendProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Full Name"
+            android:textSize="20dp" />
+
+
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="#ffffff"
+            android:onClick="btn_EditNameClick"
+            android:src="@android:drawable/ic_menu_edit"
+            android:textAlignment="viewEnd"
+            android:tint="@color/colorPrimary" />
+
+
+
+
+    </LinearLayout>
 
     <Button
+        android:id="@+id/btn_AddFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Contact"
         android:layout_gravity="center"
-        android:id="@+id/btn_AddFriend"
         android:onClick="btn_SendFriendRequestClick"
-        />
-
-
+        android:text="Add Contact" />
 
 
 </LinearLayout>

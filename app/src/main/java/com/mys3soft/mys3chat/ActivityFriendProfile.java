@@ -1,15 +1,21 @@
 package com.mys3soft.mys3chat;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.mys3soft.mys3chat.Models.User;
@@ -125,5 +131,32 @@ public class ActivityFriendProfile extends AppCompatActivity {
         btn_AddFriend.setText("Request Sent");
     }
 
+    public void btn_EditNameClick(View view){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Set display name");
+        final EditText et = new EditText(this);
+        et.setText(tv_FriendFullName.getText());
+        et.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        builder.setView(et);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = et.getText().toString();
+                db.setPreferedDisplayName(friendEmail,newName);
+                tv_FriendFullName.setText(newName);
+                setResult(Activity.RESULT_OK);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }
 
 }

@@ -95,10 +95,18 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // refresh last chat
         ListAdapter lastChatAdp = new AdapterLastChat(this, db.getUserLastChatList(user.Email));
         ListView lv_LastChatList = (ListView) findViewById(R.id.lv_LastChatList);
         if (lv_LastChatList != null)
             lv_LastChatList.setAdapter(lastChatAdp);
+
+        // refresh contacts
+        ListAdapter adp = new FriendListAdapter(this, db.getUserFriendList());
+        ListView lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
+        if (lv_FriendList != null)
+            lv_FriendList.setAdapter(adp);
 
         // set online status
         user = LocalUserService.getLocalUserFromPreferences(this);
@@ -314,7 +322,7 @@ public class ActivityMain extends AppCompatActivity {
                 db.refreshUserFriendList(friendList);
 
                 // set to adapter
-                ListAdapter adp = new FriendListAdapter(getApplicationContext(), friendList);
+                ListAdapter adp = new FriendListAdapter(getApplicationContext(), db.getUserFriendList());
                 ListView lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
                 lv_FriendList.setAdapter(adp);
                 pd.hide();

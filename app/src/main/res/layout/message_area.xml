@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         emojicon:fabSize="mini"
         android:clickable="true"
+        android:tint="#ffffff"
         android:onClick="btn_SendMessageClick"
         android:src="@android:drawable/ic_menu_send"
         android:elevation="0dp"

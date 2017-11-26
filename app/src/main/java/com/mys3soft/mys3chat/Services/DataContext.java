@@ -53,24 +53,23 @@ public class DataContext extends SQLiteOpenHelper {
     public List<User> getUserFriendList() {
         List<User> friendList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        try {
-            String query = "select * from Friends";
-            Cursor c = db.rawQuery(query, null);
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
+        String query = "select * from Friends";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            try {
                 User friend = new User();
                 friend.Email = c.getString(c.getColumnIndex("Email"));
                 friend.FirstName = c.getString(c.getColumnIndex("FirstName"));
                 friend.LastName = c.getString(c.getColumnIndex("LastName"));
                 friendList.add(friend);
                 c.moveToNext();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            c.close();
-            return friendList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return friendList;
         }
+        c.close();
+        return friendList;
 
     }
 
@@ -147,7 +146,7 @@ public class DataContext extends SQLiteOpenHelper {
         try {
             int limit = (5 * pageNo) + 45;
             String whereCondition = "((FromMail = '" + userMail + "' and ToMail='" + friendMail + "') or (ToMail = '" + userMail + "' and FromMail='" + friendMail + "'))";
-            String query = "select * from ( select rowid, * from Messages where " + whereCondition + " order by rowid desc limit "+limit+")  order by rowid ";
+            String query = "select * from ( select rowid, * from Messages where " + whereCondition + " order by rowid desc limit " + limit + ")  order by rowid ";
             Cursor c = db.rawQuery(query, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -199,5 +198,9 @@ public class DataContext extends SQLiteOpenHelper {
         return userLastChat;
     }
 
+    public void setPreferedDisplayName(String friendEmail, String newName) {
+        String query = "update Friends set FirstName = '" + newName + "', LastName='' where Email='" + friendEmail + "' ";
+        getWritableDatabase().execSQL(query);
+    }
 
 }

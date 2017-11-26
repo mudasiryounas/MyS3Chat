@@ -35,17 +35,19 @@
 
 
                 <!--<hani.momanii.supernova_emoji_library.Helper.EmojiconTextView-->
-                <!--android:id="@+id/textView"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_marginTop="26dp"-->
-                <!--android:text="Hello Emojis!"-->
-                <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
-                <!--android:textColor="#000000"-->
-                <!--emojicon:emojiconSize="45sp"-->
-                <!--emojicon:emojiconUseSystemDefault="true" />-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginTop="26dp"-->
+                    <!--android:clickable="true"-->
+                    <!--android:contextClickable="true"-->
+                    <!--android:longClickable="true"-->
+                    <!--android:text="Hello Emojis!"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+                    <!--android:textColor="#000000"-->
+                    <!--emojicon:emojiconSize="45sp"-->
+                    <!--emojicon:emojiconUseSystemDefault="true" />-->
 
                 <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
