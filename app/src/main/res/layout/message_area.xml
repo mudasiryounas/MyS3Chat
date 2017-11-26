@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
@@ -8,14 +9,13 @@
     android:gravity="bottom"
     android:orientation="horizontal">
 
-
     <ImageView
         android:id="@+id/emoji_btn"
         android:layout_width="40dp"
-        android:layout_height="38dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:padding="2dp"
+        android:padding="1dp"
         android:src="@drawable/smiley" />
 
 
@@ -32,38 +32,18 @@
         android:backgroundTint="@color/colorPrimary"
         android:textColorHint="#CFD8DC"
         emojicon:emojiconSize="28sp"
-
         />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/submit_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="55dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_weight="4"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:onClick="btn_SendMessageClick"-->
-        <!--android:src="@android:drawable/ic_menu_send" />-->
-
-    <FrameLayout
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/submit_btn"
-            android:onClick="btn_SendMessageClick"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="3dp"
-            android:src="@android:drawable/ic_menu_send" />
-        <ImageView
-            android:src="@drawable/frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
-
-
+        android:layout_height="wrap_content"
+        emojicon:fabSize="mini"
+        android:clickable="true"
+        android:onClick="btn_SendMessageClick"
+        android:src="@android:drawable/ic_menu_send"
+        android:elevation="0dp"
+        emojicon:pressedTranslationZ="0dp"
+         />
 
 </LinearLayout>

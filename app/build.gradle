@@ -27,14 +27,19 @@ android {
 }
 
 repositories {
-    maven { url "https://dl.bintray.com/hani-momanii/maven"}
+    maven { url "https://dl.bintray.com/hani-momanii/maven" }
 }
+
+
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    // for floating send button
 
 
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -43,8 +48,8 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
-    testCompile 'junit:junit:4.12'
-
+    compile 'com.android.support:design:25.3.1'
     compile 'hani.momanii.supernova_emoji_library:supernova-emoji-library:0.0.2'
-
+    compile 'com.android.support:support-v4:25.3.1'
+    testCompile 'junit:junit:4.12'
 }

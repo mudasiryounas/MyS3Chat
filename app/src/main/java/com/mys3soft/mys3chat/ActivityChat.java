@@ -3,31 +3,24 @@ package com.mys3soft.mys3chat;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.v7.app.ActionBar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.StrikethroughSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -41,9 +34,7 @@ import com.mys3soft.mys3chat.Services.LocalUserService;
 import com.mys3soft.mys3chat.Services.Tools;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +54,8 @@ public class ActivityChat extends AppCompatActivity {
     User user;
     String friendEmail;
     Firebase refUser;
+    private int pageNo = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +67,7 @@ public class ActivityChat extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
-        List<Message> chatList = db.getChat(user.Email, friendEmail);
+        List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
         for (Message item : chatList) {
             int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
             appendMessage(item.Message, item.SentDate, messageType);
@@ -230,7 +223,7 @@ public class ActivityChat extends AppCompatActivity {
         EmojiconEditText emojiconEditText = (EmojiconEditText) findViewById(R.id.et_Message);
         ImageView emojiImageView = (ImageView) findViewById(R.id.emoji_btn);
 
-        final EmojIconActions emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView,"#1c2764","#e8e8e8","#f4f4f4");
+        final EmojIconActions emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView, "#1c2764", "#e8e8e8", "#f4f4f4");
         emojIcon.ShowEmojIcon();
 
         emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
@@ -251,6 +244,26 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
 
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                List<Message> chatList = db.getChat(user.Email, friendEmail, pageNo);
+                for (Message item : chatList) {
+                    int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
+                    appendMessage(item.Message, item.SentDate, messageType);
+                }
+                scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(View.FOCUS_UP);
+                    }
+                });
+                swipeRefreshLayout.setRefreshing(false);
+                pageNo++;
+            }
+        });
 
     }
 
@@ -304,27 +317,7 @@ public class ActivityChat extends AppCompatActivity {
 
         EmojiconTextView textView = new EmojiconTextView(this);
         textView.setEmojiconSize(35);
-
-
-        // TextView textView = new TextView(ActivityChat.this);
-
-        Calendar cal = Calendar.getInstance();
-        Date todayDate = new Date();
-        cal.setTime(todayDate);
-
-        int todayMonth = cal.get(Calendar.MONTH) + 1;
-        int todayDay = cal.get(Calendar.DAY_OF_MONTH);
-
-        String[] date = sentDate.split(" ");
-        if (todayMonth == Integer.parseInt(date[1]) && todayDay == Integer.parseInt(date[0])) {
-            sentDate = "Today" + " " + date[3] + " " + date[4];
-            // 06 11 17 12:28 AM
-        } else if (todayMonth == Integer.parseInt(date[1]) && (todayDay - 1) == Integer.parseInt(date[0])) {
-            sentDate = "Yesterday" + " " + date[3] + " " + date[4];
-        } else {
-            sentDate = date[0] + " " + Tools.toCharacterMonth(Integer.parseInt(date[1])) + " " + date[2] + " " + date[3] + " " + date[4];
-        }
-
+        sentDate = Tools.messageSentDateProper(sentDate);
         SpannableString dateString = new SpannableString(sentDate);
         dateString.setSpan(new RelativeSizeSpan(0.7f), 0, sentDate.length(), 0);
         dateString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, sentDate.length(), 0);
@@ -350,13 +343,10 @@ public class ActivityChat extends AppCompatActivity {
         else {
             textView.setBackgroundResource(R.drawable.messagebg2);
             textView.setPadding(18, 18, 18, 18);
-
             lp.gravity = Gravity.LEFT;
         }
-
         textView.setLayoutParams(lp);
         layout.addView(textView);
-        //scrollView.fullScroll(View.FOCUS_DOWN);
         scrollView.post(new Runnable() {
             @Override
             public void run() {

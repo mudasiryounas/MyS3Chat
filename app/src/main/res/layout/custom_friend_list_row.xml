@@ -3,6 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
 
     >
 
@@ -22,7 +23,6 @@
         android:text="TextView"
         android:textSize="30px"
         android:textColor="#181717"
-        android:paddingLeft="14dp"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         />

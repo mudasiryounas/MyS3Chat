@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mys3soft.simplephonebook.MainActivity">
+    tools:context="com.mys3soft.mys3chat.ActivityMain">
 
     <item
         android:id="@+id/menu_profile"

@@ -137,15 +137,16 @@ public class DataContext extends SQLiteOpenHelper {
 
     public void saveMessageOnLocakDB(String from, String to, String message, String sentDate) {
         SQLiteDatabase db = getWritableDatabase();
-        String query = "insert into Messages (FromMail, ToMail, Message, SentDate) values('" + from + "', '" + to + "', '" + message.replace("'","\"") + "','" + sentDate + "');";
+        String query = "insert into Messages (FromMail, ToMail, Message, SentDate) values('" + from + "', '" + to + "', '" + message.replace("'", "\"") + "','" + sentDate + "');";
         db.execSQL(query);
     }
 
-    public List<Message> getChat(String userMail, String friendMail) {
+    public List<Message> getChat(String userMail, String friendMail, int pageNo) {
         List<Message> messageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         try {
-            String query = "select * from Messages where (FromMail = '"+userMail+"' and ToMail='"+friendMail+"') or (ToMail = '"+userMail+"' and FromMail='"+friendMail+"')  ";
+            String whereCondition = "((FromMail = '" + userMail + "' and ToMail='" + friendMail + "') or (ToMail = '" + userMail + "' and FromMail='" + friendMail + "'))";
+            String query = "select * from ( select rowid, * from Messages where "+whereCondition+ " order by rowid desc limit "+50*pageNo+") order by rowid ";
             Cursor c = db.rawQuery(query, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -166,10 +167,36 @@ public class DataContext extends SQLiteOpenHelper {
 
     }
 
-    public void  deleteChat(String userMail, String friendMail){
-        String deleteQuery = "delete from  Messages where (FromMail = '"+userMail+"' and ToMail='"+friendMail+"') or (ToMail = '"+userMail+"' and FromMail='"+friendMail+"')  ";
+    public void deleteChat(String userMail, String friendMail) {
+        String deleteQuery = "delete from  Messages where (FromMail = '" + userMail + "' and ToMail='" + friendMail + "') or (ToMail = '" + userMail + "' and FromMail='" + friendMail + "')  ";
         getWritableDatabase().execSQL(deleteQuery);
 
     }
+
+    public List<Message> getUserLastChatList(String userMail) {
+        List<User> userFriendList = getUserFriendList();
+        List<Message> userLastChat = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        for (User friend : userFriendList) {
+            String query = "select * from Messages where (FromMail = '" + userMail + "' and ToMail='" + friend.Email + "') or (ToMail = '" + userMail + "' and FromMail='" + friend.Email + "')  order by rowid desc limit 1  ";
+            Cursor c = db.rawQuery(query, null);
+            c.moveToFirst();
+            try {
+                Message mess = new Message();
+                // set from email to friend so when user click on list to navigate to chat activity
+                mess.FromMail = friend.Email;
+                mess.Message = c.getString(c.getColumnIndex("Message"));
+                mess.SentDate = c.getString(c.getColumnIndex("SentDate"));
+                mess.FriendFullName = friend.FirstName + " " + friend.LastName;
+                userLastChat.add(mess);
+            } catch (Exception e) {
+
+            }
+
+        }
+
+        return userLastChat;
+    }
+
 
 }

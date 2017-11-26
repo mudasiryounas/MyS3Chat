@@ -7,5 +7,6 @@ public class Message {
     public String ToMail;
     public String Message;
     public String SentDate;
+    public String FriendFullName;
 
 }

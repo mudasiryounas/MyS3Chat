@@ -22,7 +22,6 @@ public class FriendListAdapter extends ArrayAdapter<User> {
         super(context, R.layout.custom_friend_list_row, contactList);
     }
 
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

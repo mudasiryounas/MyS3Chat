@@ -1,6 +1,7 @@
 package com.mys3soft.mys3chat.Services;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,20 +109,19 @@ public class Tools {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
         Date currentDate = new Date();
         String cuurentDateString = dateFormat.format(currentDate);
-
         Date nw = null;
         Date seen = null;
         try {
-
             nw = dateFormat.parse(cuurentDateString);
             seen = dateFormat.parse(lastSeenDate);
             long diff = nw.getTime() - seen.getTime();
             long diffDays = diff / (24 * 60 * 60 * 1000);
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffMinutes = diff / (60 * 1000) % 60;
-            if (diffDays > 0)
-                return "Last seen " + diffDays + " days ago";
-            else if (diffHours > 0)
+            if (diffDays > 0) {
+                String[] originalDate = lastSeenDate.split(" ");
+                return "Last seen " + originalDate[0] + " " + Tools.toCharacterMonth(Integer.parseInt(originalDate[1])) + " " + originalDate[2];
+            } else if (diffHours > 0)
                 return "Last seen " + diffHours + " hours ago";
             else if (diffMinutes > 0) {
                 if (diffMinutes <= 1) {
@@ -138,4 +138,22 @@ public class Tools {
 
     }
 
+    public static String messageSentDateProper(String sentDate) {
+        String properDate = "";
+        Calendar cal = Calendar.getInstance();
+        Date todayDate = new Date();
+        cal.setTime(todayDate);
+        String[] date = sentDate.split(" ");
+        int todayMonth = cal.get(Calendar.MONTH) + 1;
+        int todayDay = cal.get(Calendar.DAY_OF_MONTH);
+        if (todayMonth == Integer.parseInt(date[1]) && todayDay == Integer.parseInt(date[0])) {
+            properDate = "Today" + " " + date[3] + " " + date[4];
+            // 06 11 17 12:28 AM
+        } else if (todayMonth == Integer.parseInt(date[1]) && (todayDay - 1) == Integer.parseInt(date[0])) {
+            properDate = "Yesterday" + " " + date[3] + " " + date[4];
+        } else {
+            properDate = date[0] + " " + Tools.toCharacterMonth(Integer.parseInt(date[1])) + " " + date[2] + " " + date[3] + " " + date[4];
+        }
+        return properDate;
+    }
 }

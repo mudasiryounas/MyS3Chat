@@ -4,4 +4,10 @@
     <string name="Profile">Profile</string>
     <string name="Contacts">Contacts</string>
     <string name="AddContacts">Add Contacts</string>
+    <string name="title_activity_main">MyS3Chat</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
