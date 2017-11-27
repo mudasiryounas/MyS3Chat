@@ -14,16 +14,14 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-
-
         <TextView
             android:id="@+id/tv_FriendFullName_L_FriendProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Full Name"
+            android:textColor="#0e0e0e"
             android:textSize="20dp" />
-
 
 
         <ImageButton
@@ -31,14 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:background="#ffffff"
+            android:background="@android:color/transparent"
             android:onClick="btn_EditNameClick"
-            android:src="@android:drawable/ic_menu_edit"
-            android:textAlignment="viewEnd"
-            android:tint="@color/colorPrimary" />
-
-
-
+            android:src="@drawable/emoji_1f58c"
+            android:textAlignment="viewEnd" />
 
     </LinearLayout>
 

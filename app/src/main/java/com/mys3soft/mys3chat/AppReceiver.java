@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.mys3soft.mys3chat.Services.LocalUserService;
+
 public class AppReceiver extends BroadcastReceiver {
 
     @Override

@@ -2,9 +2,11 @@ package com.mys3soft.mys3chat;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -51,7 +53,7 @@ public class ActivityMain extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    User user;
+    private User user;
     Firebase refUser;
     private DataContext db;
     private ProgressDialog pd;
@@ -80,8 +82,9 @@ public class ActivityMain extends AppCompatActivity {
         user = LocalUserService.getLocalUserFromPreferences(this);
         if (user.Email == null) {
             // send to activitylogin
-            Intent intent = new Intent(this, ActivityLogin.class);
-            startActivityForResult(intent, 100);
+//            Intent intent = new Intent(this, ActivityLogin.class);
+//            startActivityForResult(intent, 100);
+//
         } else {
             startService(new Intent(this, AppService.class));
             if (refUser == null) {
@@ -95,6 +98,14 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // check if user exists in local db
+        user = LocalUserService.getLocalUserFromPreferences(this);
+        if (user.Email == null) {
+            // send to activitylogin
+            Intent intent = new Intent(this, ActivityLogin.class);
+            startActivityForResult(intent, 100);
+        }
 
         // refresh last chat
         ListAdapter lastChatAdp = new AdapterLastChat(this, db.getUserLastChatList(user.Email));
@@ -139,16 +150,30 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_logout) {
-            // set last seen
-            DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
-            Date date = new Date();
-            refUser.child("Status").setValue(dateFormat.format(date));
-            if (LocalUserService.deleteLocalUserFromPreferences(this)) {
-                db.deleteAllFriendsFromLocalDB();
-                System.exit(1);
-            } else {
-                System.exit(1);
-            }
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure to logout, all of your local data such as Messages etc will be lost?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // set last seen
+                            DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm a");
+                            Date date = new Date();
+                            refUser.child("Status").setValue(dateFormat.format(date));
+                            if (LocalUserService.deleteLocalUserFromPreferences(getApplicationContext())) {
+                                db.deleteAllFriendsFromLocalDB();
+                               // stopService(new Intent(getApplicationContext(), AppService.class));
+                                Toast.makeText(getApplicationContext(), "Logout Success", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), ActivityLogin.class);
+                                startActivityForResult(intent, 100);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Logout Success", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), ActivityLogin.class);
+                                startActivityForResult(intent, 100);
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
             return true;
         }
         if (id == R.id.menu_profile) {
@@ -337,6 +362,7 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        user = LocalUserService.getLocalUserFromPreferences(this);
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             if (refUser == null) {
                 refUser = new Firebase(StaticInfo.UsersURL + "/" + user.Email);

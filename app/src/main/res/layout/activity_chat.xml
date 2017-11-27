@@ -7,12 +7,25 @@
     android:layout_height="match_parent"
     android:background="#f3faff"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="2dp"
-
     tools:context="com.mys3soft.mys3chat.ActivityChat">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarChatActivity"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
@@ -20,11 +33,14 @@
         android:layout_height="match_parent"
         android:layout_weight="20">
 
-
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="2dp">
 
 
             <LinearLayout
@@ -35,19 +51,19 @@
 
 
                 <!--<hani.momanii.supernova_emoji_library.Helper.EmojiconTextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_marginTop="26dp"-->
-                    <!--android:clickable="true"-->
-                    <!--android:contextClickable="true"-->
-                    <!--android:longClickable="true"-->
-                    <!--android:text="Hello Emojis!"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
-                    <!--android:textColor="#000000"-->
-                    <!--emojicon:emojiconSize="45sp"-->
-                    <!--emojicon:emojiconUseSystemDefault="true" />-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="26dp"-->
+                <!--android:clickable="true"-->
+                <!--android:contextClickable="true"-->
+                <!--android:longClickable="true"-->
+                <!--android:text="Hello Emojis!"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+                <!--android:textColor="#000000"-->
+                <!--emojicon:emojiconSize="45sp"-->
+                <!--emojicon:emojiconUseSystemDefault="true" />-->
 
                 <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
@@ -84,6 +100,7 @@
         layout="@layout/message_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom" />
+        android:gravity="bottom"
+        />
 
 </LinearLayout>

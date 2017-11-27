@@ -17,7 +17,6 @@ import java.util.List;
 
 /*
 Tables:
-    1) LocalUser
     2) Friends -> contains local user friend list
     3) Messages
 
@@ -26,7 +25,7 @@ Tables:
 public class DataContext extends SQLiteOpenHelper {
 
     public DataContext(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, "mys3chat.db", factory, 2);
+        super(context, "mys3chat.db", factory, 3);
     }
 
     @Override
@@ -110,8 +109,10 @@ public class DataContext extends SQLiteOpenHelper {
 
     public void deleteAllFriendsFromLocalDB() {
         String query = "delete from Friends";
+        String queryMess = "delete from Messages";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query);
+        db.execSQL(queryMess);
     }
 
     public void deleteFriendByEmailFromLocalDB(String email) {

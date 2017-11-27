@@ -47,22 +47,17 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        //region UI Controls
         et_Email = (EditText) findViewById(R.id.et_Email);
         et_Password = (EditText) findViewById(R.id.et_Password);
-        //endregion
     }
 
 
-    //region Login
     public void btnLoginClick(View view) {
         if (et_Email.getText().toString().equals("")) {
             et_Email.setError("Email cannot be empty");
 
         } else if (et_Password.getText().toString().equals("")) {
             et_Password.setError("Password cannot be empty");
-// com.squareup.retrofit2:converter-gson
         } else {
             pd = new ProgressDialog(this);
             pd.setMessage("Loading...");
@@ -71,9 +66,8 @@ public class ActivityLogin extends AppCompatActivity {
             LoginTask t = new LoginTask();
             t.execute();
         }
-
     }
-    //endregion
+
 
     public class LoginTask extends AsyncTask<Void, Void, String> {
         @Override
@@ -84,16 +78,14 @@ public class ActivityLogin extends AppCompatActivity {
                     .build();
 
             IFireBaseAPI api = retrofit.create(IFireBaseAPI.class);
-           // Call<String> call = api.getAllUsersAsJsonString();
+            // Call<String> call = api.getAllUsersAsJsonString();
             Call<String> call = api.getSingleUserByEmail(StaticInfo.UsersURL + "/" + email + ".json");
             try {
                 return call.execute().body();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 pd.hide();
-                e.printStackTrace();
+                return "null";
             }
-
-            return null;
         }
 
         @Override
@@ -131,16 +123,17 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
 
-    //region SignUp
     public void btnSignUpClick(View view) {
 
         startActivity(new Intent(this, ActivityRegister.class));
     }
-    //endregion
 
 
     @Override
     public void onBackPressed() {
-
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

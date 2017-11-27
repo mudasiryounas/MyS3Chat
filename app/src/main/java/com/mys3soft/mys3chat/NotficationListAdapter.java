@@ -2,17 +2,23 @@ package com.mys3soft.mys3chat;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Layout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,8 +38,8 @@ import java.util.Map;
 public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
 
     private Context con;
-    private Button acceptBtn;
-
+    private ImageButton acceptBtn;
+    private ImageButton rejectBtn;
 
 
     public NotficationListAdapter(@NonNull Context context, List<NotificationModel> list) {
@@ -60,24 +66,39 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
         // friend request
         if (model.NotificationType == 1) {
             // make button and append
-            acceptBtn = new Button(getContext());
-            acceptBtn.setText("Accept");
+//            acceptBtn = new Button(getContext());
+//            rejectBtn = new Button(getContext());
 
-            setCustomOnClick(acceptBtn, model.EmailFrom,model.FirstName,model.LastName);
+            acceptBtn = new ImageButton(getContext());
+            rejectBtn = new ImageButton(getContext());
+
+            acceptBtn.setBackgroundColor(Color.TRANSPARENT);
+            rejectBtn.setBackgroundColor(Color.TRANSPARENT);
+
+            acceptBtn.setImageResource(R.drawable.emoji_2705);
+            rejectBtn.setImageResource(R.drawable.emoji_274c);
+
+            setCustomOnClick(acceptBtn, model.EmailFrom, model.FirstName, model.LastName);
+            onRejectClick(rejectBtn, position);
             // set layout params
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
+            layoutParams.gravity = Gravity.CENTER;
 
             acceptBtn.setLayoutParams(layoutParams);
+            rejectBtn.setLayoutParams(layoutParams);
+            acceptBtn.setPadding(4, 4, 4, 4);
+            rejectBtn.setPadding(4, 4, 4, 4);
             layout.addView(acceptBtn);
+            layout.addView(rejectBtn);
         }
         return customView;
     }
 
 
-    private void setCustomOnClick(final Button btn, final String friendEmail, final String friendFirstName, final String friendLastName) {
+    private void setCustomOnClick(final ImageButton btn, final String friendEmail, final String friendFirstName, final String friendLastName) {
 
         btn.setOnClickListener(
                 new View.OnClickListener() {
@@ -103,8 +124,19 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
                         Firebase frRequ = new Firebase(StaticInfo.EndPoint + "/friendrequests");
                         frRequ.child(user.Email).child(friendEmail).removeValue();
                         acceptBtn.setEnabled(false);
-                        acceptBtn.setText("Accepted");
 
+                        Toast.makeText(con, "Accepted", Toast.LENGTH_SHORT).show();
+                        rejectBtn.setEnabled(false);
+
+                        Map<String, String> notMap = new HashMap<String, String>();
+                        notMap.put("SenderEmail", user.Email);
+                        notMap.put("FirstName", user.FirstName);
+                        notMap.put("LastName", user.LastName);
+                        notMap.put("Message", "Contact request accepted start chating... ");
+                        // accepted contact reques
+                        notMap.put("NotificationType", "3");
+                        Firebase notRef = new Firebase(StaticInfo.NotificationEndPoint + "/" + friendEmail);
+                        notRef.push().setValue(notMap);
                     }
                 }
         );
@@ -112,4 +144,27 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
 
     }
 
+    private void onRejectClick(final ImageButton btn, final int modelPosition) {
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(con)
+                        .setMessage("Are you sure to reject this contact request?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                User user = LocalUserService.getLocalUserFromPreferences(con);
+                                Firebase fireBase = new Firebase(StaticInfo.FriendRequestsEndPoint + "/" + user.Email + "/" + getItem(modelPosition).FriendRequestFireBaseKey);
+                                fireBase.removeValue();
+                                rejectBtn.setEnabled(false);
+                                acceptBtn.setEnabled(false);
+                                Toast.makeText(con, "Rejected", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
+            }
+        });
+
+    }
 }

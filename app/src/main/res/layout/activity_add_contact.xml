@@ -25,12 +25,21 @@
             android:ems="10"
             android:hint="Search Name , Email ..."
             android:inputType="text" />
-        <Button
+
+        <ImageButton
             android:id="@+id/bt_Search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="btn_SearchClick"
-            android:text="Search" />
+            android:src="@drawable/emoji_1f50d"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:onClick="btn_SearchClick"/>
+        <!--<Button-->
+            <!--android:id="@+id/bt_Search"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="btn_SearchClick"-->
+            <!--android:text="Search" />-->
     </LinearLayout>
 
     <ListView

@@ -20,4 +20,6 @@ public class NotificationModel {
     public String FirstName;
     public String LastName;
 
+    public String FriendRequestFireBaseKey;
+
 }

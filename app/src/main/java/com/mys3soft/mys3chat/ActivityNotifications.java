@@ -51,7 +51,7 @@ public class ActivityNotifications extends AppCompatActivity {
         lv_NotificationList = (ListView) findViewById(R.id.lv_NoticicationList);
         notificationList = new ArrayList<>();
         user = LocalUserService.getLocalUserFromPreferences(this);
-        Firebase reqRef =  new Firebase(StaticInfo.EndPoint + "/friendrequests/"+user.Email);
+        Firebase reqRef = new Firebase(StaticInfo.EndPoint + "/friendrequests/" + user.Email);
         reqRef.addChildEventListener(
                 new ChildEventListener() {
                     @Override
@@ -66,6 +66,7 @@ public class ActivityNotifications extends AppCompatActivity {
                         not.NotificationType = 1; // friend request
                         notificationList.add(not);
                         not.EmailFrom = key;
+                        not.FriendRequestFireBaseKey = dataSnapshot.getKey();
                         not.NotificationMessage = Tools.toProperName(firstName) + " " + Tools.toProperName(lastName);
                         ListAdapter adp = new NotficationListAdapter(ActivityNotifications.this, notificationList);
                         lv_NotificationList.setAdapter(adp);
@@ -78,6 +79,16 @@ public class ActivityNotifications extends AppCompatActivity {
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        String friendEmail = dataSnapshot.getKey();
+                        int index = -1;
+                        for (int i = 0; i < notificationList.size(); i++) {
+                            NotificationModel item = notificationList.get(i);
+                            if (item.EmailFrom.equals(friendEmail))
+                                index = i;
+                        }
+                        notificationList.remove(index);
+                        ListAdapter adp = new NotficationListAdapter(ActivityNotifications.this, notificationList);
+                        lv_NotificationList.setAdapter(adp);
 
                     }
 

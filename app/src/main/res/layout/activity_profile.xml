@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:padding="10dp"
     tools:context="com.mys3soft.mys3chat.ActivityProfile">
 
 
@@ -14,14 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_UserFullName"
-        android:inputType="text"
-        android:textSize="30dp"
-        android:maxLines="1"
-        android:text="name"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="54dp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="20dp"
+        android:text="name name"
+        android:textColor="#312f2f"
+        android:gravity="center" />
 
 
 
@@ -30,4 +26,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>

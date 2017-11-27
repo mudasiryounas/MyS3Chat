@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_CustomNotificationRow"
+    android:padding="6dp"
     >
 
 
@@ -13,10 +14,29 @@
         android:id="@+id/tv_NotificationMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notification message"
+        android:text="Notification"
         android:textSize="20dp"
+        android:textColor="#1e1d1d"
+        android:layout_gravity="center"
         android:paddingLeft="10dp"
+        android:layout_weight="20"
         />
+
+    <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:src="@drawable/emoji_2705"/>-->
+
+    <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:src="@drawable/emoji_274c"/>-->
+
+
 
 
 
