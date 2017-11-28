@@ -5,44 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="4dp"
+    android:padding="20dp"
     tools:context="com.mys3soft.mys3chat.ActivityFriendProfile">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/dp_placeholder" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:background="@drawable/background_round"
+        android:padding="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
 
         <TextView
             android:id="@+id/tv_FriendFullName_L_FriendProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="Full Name"
-            android:textColor="#0e0e0e"
+            android:textColor="#ffffff"
+            android:layout_weight="30"
+            android:textAlignment="center"
             android:textSize="20dp" />
-
 
         <ImageButton
             android:id="@+id/btn_EditName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:background="@android:color/transparent"
             android:onClick="btn_EditNameClick"
-            android:src="@drawable/emoji_1f58c"
-            android:textAlignment="viewEnd" />
+            android:src="@android:drawable/ic_menu_edit"/>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_AddFriend"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="btn_SendFriendRequestClick"
-        android:text="Add Contact" />
+        android:layout_weight="20"
+        android:gravity="center"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/btn_AddFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_primary"
+            android:drawableLeft="@drawable/ic_menu_invite"
+            android:drawableTint="#ffffff"
+            android:onClick="btn_SendFriendRequestClick"
+            android:padding="4dp"
+            android:text="Add Contact"
+            android:textColor="#ffffff" />
+    </LinearLayout>
 
 </LinearLayout>

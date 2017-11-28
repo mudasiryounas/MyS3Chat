@@ -5,4 +5,5 @@
     <color name="colorAccent">#1c2764</color>
     <color name="messageTextColor">#000000</color>
     <color name="tabsIndicatorColor">#ffffff</color>
+    <color name="bg_color">#f3faff</color>
 </resources>

@@ -274,6 +274,17 @@ public class ActivityChat extends AppCompatActivity {
                 pageNo++;
             }
         });
+        
+        
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityChat.this, ActivityFriendProfile.class);
+                intent.putExtra("Email", friendEmail);
+                startActivityForResult(intent, StaticInfo.ChatAciviityRequestCode);
+            }
+        });
 
     }
 

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,12 +23,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.mys3soft.mys3chat.Models.Message;
 import com.mys3soft.mys3chat.Models.StaticInfo;
 import com.mys3soft.mys3chat.Models.User;
 import com.mys3soft.mys3chat.Services.DataContext;
@@ -57,6 +60,8 @@ public class ActivityMain extends AppCompatActivity {
     Firebase refUser;
     private DataContext db;
     private ProgressDialog pd;
+    private List<Message> userLastChatList;
+    private List<User> userFriednList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,19 +110,122 @@ public class ActivityMain extends AppCompatActivity {
             // send to activitylogin
             Intent intent = new Intent(this, ActivityLogin.class);
             startActivityForResult(intent, 100);
+            return;
         }
 
         // refresh last chat
-        ListAdapter lastChatAdp = new AdapterLastChat(this, db.getUserLastChatList(user.Email));
-        ListView lv_LastChatList = (ListView) findViewById(R.id.lv_LastChatList);
-        if (lv_LastChatList != null)
+        userLastChatList = db.getUserLastChatList(user.Email);
+        ListAdapter lastChatAdp = new AdapterLastChat(this, userLastChatList);
+        final ListView lv_LastChatList = (ListView) findViewById(R.id.lv_LastChatList);
+        if (lv_LastChatList != null) {
             lv_LastChatList.setAdapter(lastChatAdp);
+            // reset listener
+
+            lv_LastChatList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (userLastChatList.size() <= position) return false;
+                    final Message selectedMessageItem = userLastChatList.get(position);
+                    final CharSequence options[] = new CharSequence[]{"Delete Chat"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityMain.this);
+                    builder.setTitle(selectedMessageItem.FriendFullName);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int index) {
+                            // the user clicked on list[index]
+                            if (index == 0) {
+                                // Delete Chat
+                                new AlertDialog.Builder(ActivityMain.this)
+                                        .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                db.deleteChat(user.Email, selectedMessageItem.FromMail);
+                                                Toast.makeText(getApplicationContext(), "Chat deleted successfully", Toast.LENGTH_SHORT).show();
+                                                userLastChatList = db.getUserLastChatList(user.Email);
+                                                ListAdapter adp = new AdapterLastChat(getApplicationContext(), userLastChatList);
+                                                lv_LastChatList.setAdapter(adp);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .show();
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                    return true;
+                }
+            });
+
+        }
 
         // refresh contacts
-        ListAdapter adp = new FriendListAdapter(this, db.getUserFriendList());
-        ListView lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
-        if (lv_FriendList != null)
+        userFriednList = db.getUserFriendList();
+        ListAdapter adp = new FriendListAdapter(this, userFriednList);
+        final ListView lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
+        if (lv_FriendList != null) {
             lv_FriendList.setAdapter(adp);
+            lv_FriendList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (userFriednList.size() <= position) return false;
+                    final User selectedUser = userFriednList.get(position);
+                    final CharSequence options[] = new CharSequence[]{"Profile", "Delete Contact"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityMain.this);
+                    builder.setTitle(selectedUser.FirstName + " " + selectedUser.LastName);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int index) {
+                            // the user clicked on list[index]
+                            if (index == 0) {
+                                // Profile
+                                Intent intent = new Intent(ActivityMain.this, ActivityFriendProfile.class);
+                                intent.putExtra("Email", selectedUser.Email);
+                                startActivityForResult(intent, StaticInfo.ChatAciviityRequestCode);
+                            } else {
+                                // Delete Contact
+                                new AlertDialog.Builder(ActivityMain.this)
+                                        .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + selectedUser.Email);
+                                                ref.removeValue();
+                                                // delete from local database
+                                                db.deleteFriendByEmailFromLocalDB(selectedUser.Email);
+                                                Toast.makeText(ActivityMain.this, "Contact deleted successfully", Toast.LENGTH_SHORT).show();
+                                                userFriednList = db.getUserFriendList();
+                                                ListAdapter adp = new FriendListAdapter(ActivityMain.this, userFriednList);
+                                                lv_FriendList.setAdapter(adp);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .show();
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
+
+
+                    return true;
+                }
+            });
+        }
 
         // set online status
         user = LocalUserService.getLocalUserFromPreferences(this);
@@ -151,7 +259,7 @@ public class ActivityMain extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_logout) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to logout, all of your local data such as Messages etc will be lost?")
+                    .setMessage("Are you sure to logout, you will no longer recieve notifications?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -161,7 +269,7 @@ public class ActivityMain extends AppCompatActivity {
                             refUser.child("Status").setValue(dateFormat.format(date));
                             if (LocalUserService.deleteLocalUserFromPreferences(getApplicationContext())) {
                                 db.deleteAllFriendsFromLocalDB();
-                               // stopService(new Intent(getApplicationContext(), AppService.class));
+                                // stopService(new Intent(getApplicationContext(), AppService.class));
                                 Toast.makeText(getApplicationContext(), "Logout Success", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), ActivityLogin.class);
                                 startActivityForResult(intent, 100);
@@ -206,6 +314,9 @@ public class ActivityMain extends AppCompatActivity {
         private ListView lv_LastChatList;
         private DataContext db;
         User user;
+        private List<User> userFriendList;
+        private List<Message> userLastChatList;
+
 
         public PlaceholderFragment() {
         }
@@ -229,7 +340,8 @@ public class ActivityMain extends AppCompatActivity {
             // Chat tab
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.fragment_chat, container, false);
-                ListAdapter adp = new AdapterLastChat(getActivity(), db.getUserLastChatList(user.Email));
+                userLastChatList = db.getUserLastChatList(user.Email);
+                ListAdapter adp = new AdapterLastChat(getActivity(), userLastChatList);
                 lv_LastChatList = (ListView) rootView.findViewById(R.id.lv_LastChatList);
                 lv_LastChatList.setAdapter(adp);
                 lv_LastChatList.setOnItemClickListener(
@@ -245,13 +357,60 @@ public class ActivityMain extends AppCompatActivity {
                             }
                         }
                 );
+
+                lv_LastChatList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (userLastChatList.size() <= position) return false;
+                        final Message selectedMessageItem = userLastChatList.get(position);
+                        final CharSequence options[] = new CharSequence[]{"Delete Chat"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(selectedMessageItem.FriendFullName);
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int index) {
+                                // the user clicked on list[index]
+                                if (index == 0) {
+                                    // Delete Chat
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    db.deleteChat(user.Email, selectedMessageItem.FromMail);
+                                                    Toast.makeText(getActivity(), "Chat deleted successfully", Toast.LENGTH_SHORT).show();
+                                                    userLastChatList = db.getUserLastChatList(user.Email);
+                                                    ListAdapter adp = new AdapterLastChat(getActivity(), userLastChatList);
+                                                    lv_LastChatList = (ListView) rootView.findViewById(R.id.lv_LastChatList);
+                                                    lv_LastChatList.setAdapter(adp);
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, null)
+                                            .show();
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.show();
+
+                        return true;
+                    }
+                });
+
                 return rootView;
             }
             // Contacts tab
             else {
                 rootView = inflater.inflate(R.layout.fragment_contact, container, false);
-
-                ListAdapter adp = new FriendListAdapter(getActivity(), db.getUserFriendList());
+                userFriendList = db.getUserFriendList();
+                ListAdapter adp = new FriendListAdapter(getActivity(), userFriendList);
                 ListView lv_FriendList = (ListView) rootView.findViewById(R.id.lv_FriendList);
                 lv_FriendList.setAdapter(adp);
                 lv_FriendList.setOnItemClickListener(
@@ -266,7 +425,63 @@ public class ActivityMain extends AppCompatActivity {
                                 startActivity(intend);
                             }
                         }
+
                 );
+
+                lv_FriendList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (userFriendList.size() <= position) return false;
+                        final User selectedUser = userFriendList.get(position);
+                        final CharSequence options[] = new CharSequence[]{"Profile", "Delete Contact"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(selectedUser.FirstName + " " + selectedUser.LastName);
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int index) {
+                                // the user clicked on list[index]
+                                if (index == 0) {
+                                    // Profile
+                                    Intent intent = new Intent(getActivity(), ActivityFriendProfile.class);
+                                    intent.putExtra("Email", selectedUser.Email);
+                                    startActivityForResult(intent, StaticInfo.ChatAciviityRequestCode);
+                                } else {
+                                    // Delete Contact
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + selectedUser.Email);
+                                                    ref.removeValue();
+                                                    // delete from local database
+                                                    db.deleteFriendByEmailFromLocalDB(selectedUser.Email);
+                                                    Toast.makeText(getActivity(), "Contact deleted successfully", Toast.LENGTH_SHORT).show();
+                                                    userFriendList = db.getUserFriendList();
+                                                    ListAdapter adp = new FriendListAdapter(getActivity(), userFriendList);
+                                                    ListView lv_FriendList = (ListView) rootView.findViewById(R.id.lv_FriendList);
+                                                    lv_FriendList.setAdapter(adp);
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, null)
+                                            .show();
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.show();
+
+
+                        return true;
+                    }
+                });
                 return rootView;
             }
 
@@ -372,5 +587,6 @@ public class ActivityMain extends AppCompatActivity {
             t.execute();
         }
     }
+
 
 }

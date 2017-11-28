@@ -109,10 +109,10 @@ public class DataContext extends SQLiteOpenHelper {
 
     public void deleteAllFriendsFromLocalDB() {
         String query = "delete from Friends";
-        String queryMess = "delete from Messages";
+       // String queryMess = "delete from Messages";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query);
-        db.execSQL(queryMess);
+        //db.execSQL(queryMess);
     }
 
     public void deleteFriendByEmailFromLocalDB(String email) {

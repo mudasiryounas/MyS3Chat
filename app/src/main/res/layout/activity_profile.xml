@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,21 +8,31 @@
     android:padding="10dp"
     tools:context="com.mys3soft.mys3chat.ActivityProfile">
 
-
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_UserFullName"
-        android:textSize="20dp"
-        android:text="name name"
-        android:textColor="#312f2f"
-        android:gravity="center" />
+        android:src="@drawable/dp_placeholder" />
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_round"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
 
+        <TextView
+            android:id="@+id/tv_UserFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
 
 
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -12,16 +12,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ActivityMain"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ActivityLogin"
-            android:noHistory="true" android:launchMode="singleTop" />
-        <activity android:name=".ActivityRegister" />
+            android:noHistory="true"
+            android:launchMode="singleTop" />
+        <activity android:name=".ActivityRegister"   />
         <activity android:name=".ActivityProfile" />
         <activity android:name=".ActivityChat"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop" />
-        <activity android:name=".ActivityAddContact" />
-        <activity android:name=".ActivityFriendProfile" />
-        <activity android:name=".ActivityNotifications" />
+            android:launchMode="singleTop"    />
+        <activity android:name=".ActivityAddContact"  />
+        <activity android:name=".ActivityFriendProfile"  />
+        <activity android:name=".ActivityNotifications"   />
 
         <service
             android:name=".AppService"
@@ -38,16 +48,7 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".ActivityMain"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

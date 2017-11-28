@@ -7,8 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
-        <!--<item name="actionBarSize">88dip</item>-->
-
+        <item name="android:windowBackground">@color/bg_color</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,8 +15,17 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+
+    </style>
+
+    <!--<style name="GlobalTheme"  parent="@android:style/Theme.Light">-->
+    <!--<item name="android:windowBackground">@color/bg_color</item>-->
+    <!--</style>-->
+
 
 </resources>

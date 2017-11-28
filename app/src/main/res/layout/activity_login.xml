@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:paddingTop="20dp"
+            android:paddingTop="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
@@ -40,20 +40,20 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/btn_primary"
                 android:drawableLeft="@drawable/emoji_1f464"
                 android:onClick="btnLoginClick"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:text="Login"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
                 android:textColor="#ffffff" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#64ab74"
+                android:background="@drawable/btn_success"
                 android:drawableLeft="@drawable/emoji_1f465"
                 android:onClick="btnSignUpClick"
                 android:paddingLeft="20dp"

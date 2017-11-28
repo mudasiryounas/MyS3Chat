@@ -7,7 +7,9 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:gravity="bottom"
-    android:padding="6dp"
+    android:paddingRight="6dp"
+    android:paddingLeft="6dp"
+    android:paddingBottom="6dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -22,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/emoji_btn"
         android:layout_weight="1"
         android:hint="Message..."
         android:inputType="textMultiLine|textCapSentences"
