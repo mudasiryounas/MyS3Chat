@@ -294,6 +294,7 @@ public class ActivityChat extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
         getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+       // getSupportActionBar().setIcon(R.drawable.dp_placeholder_sm);
 
         scrollView.post(new Runnable() {
             @Override
@@ -400,7 +401,7 @@ public class ActivityChat extends AppCompatActivity {
     public void appendMessage(String mess, String sentDate, int messType, final boolean scrollUp) {
 
         EmojiconTextView textView = new EmojiconTextView(this);
-        textView.setEmojiconSize(35);
+        textView.setEmojiconSize(30);
         sentDate = Tools.messageSentDateProper(sentDate);
         SpannableString dateString = new SpannableString(sentDate);
         dateString.setSpan(new RelativeSizeSpan(0.7f), 0, sentDate.length(), 0);
@@ -410,25 +411,26 @@ public class ActivityChat extends AppCompatActivity {
         textView.append(dateString);
         textView.setTextColor(Color.parseColor("#000000"));
 
+
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 6f
         );
-        lp.setMargins(0, 0, 0, 10);
+        lp.setMargins(0, 0, 0, 5);
         // 1 user
         if (messType == 1) {
             textView.setBackgroundResource(R.drawable.messagebg1);
-            textView.setPadding(18, 18, 18, 18);
             lp.gravity = Gravity.RIGHT;
-
         }
         //  2 friend
         else {
             textView.setBackgroundResource(R.drawable.messagebg2);
-            textView.setPadding(18, 18, 18, 18);
             lp.gravity = Gravity.LEFT;
         }
+
+        textView.setPadding(12, 4, 12, 4);
+
         textView.setLayoutParams(lp);
         layout.addView(textView);
         scrollView.post(new Runnable() {
@@ -454,7 +456,7 @@ public class ActivityChat extends AppCompatActivity {
         if (id == R.id.menu_deleteConservation) {
             new AlertDialog.Builder(this)
                     .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             db.deleteChat(user.Email, friendEmail);
@@ -468,7 +470,7 @@ public class ActivityChat extends AppCompatActivity {
         if (id == R.id.menu_deleteContact) {
             new AlertDialog.Builder(this)
                     .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + friendEmail);

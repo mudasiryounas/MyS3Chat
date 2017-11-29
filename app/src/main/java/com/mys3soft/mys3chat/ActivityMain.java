@@ -137,7 +137,7 @@ public class ActivityMain extends AppCompatActivity {
                                 // Delete Chat
                                 new AlertDialog.Builder(ActivityMain.this)
                                         .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 db.deleteChat(user.Email, selectedMessageItem.FromMail);
@@ -193,7 +193,7 @@ public class ActivityMain extends AppCompatActivity {
                                 // Delete Contact
                                 new AlertDialog.Builder(ActivityMain.this)
                                         .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + selectedUser.Email);
@@ -374,7 +374,7 @@ public class ActivityMain extends AppCompatActivity {
                                     // Delete Chat
                                     new AlertDialog.Builder(getActivity())
                                             .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
-                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     db.deleteChat(user.Email, selectedMessageItem.FromMail);
@@ -449,7 +449,7 @@ public class ActivityMain extends AppCompatActivity {
                                     // Delete Contact
                                     new AlertDialog.Builder(getActivity())
                                             .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
-                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     Firebase ref = new Firebase(StaticInfo.EndPoint + "/friends/" + user.Email + "/" + selectedUser.Email);
@@ -566,6 +566,7 @@ public class ActivityMain extends AppCompatActivity {
                 ListView lv_FriendList = (ListView) findViewById(R.id.lv_FriendList);
                 lv_FriendList.setAdapter(adp);
                 pd.hide();
+                Toast.makeText(ActivityMain.this, "Contact list is updated", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 pd.hide();
                 e.printStackTrace();

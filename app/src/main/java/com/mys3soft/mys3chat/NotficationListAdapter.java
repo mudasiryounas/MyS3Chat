@@ -79,7 +79,7 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
             rejectBtn.setImageResource(R.drawable.emoji_274c);
 
             setCustomOnClick(acceptBtn, model.EmailFrom, model.FirstName, model.LastName);
-            onRejectClick(rejectBtn, position);
+            onRejectClick(rejectBtn, position, model.FirstName + " " + model.LastName);
             // set layout params
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -144,13 +144,14 @@ public class NotficationListAdapter extends ArrayAdapter<NotificationModel> {
 
     }
 
-    private void onRejectClick(final ImageButton btn, final int modelPosition) {
+    private void onRejectClick(final ImageButton btn, final int modelPosition, final String friedFullName) {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(con)
+                        .setTitle(friedFullName)
                         .setMessage("Are you sure to reject this contact request?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Reject", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 User user = LocalUserService.getLocalUserFromPreferences(con);

@@ -8,6 +8,11 @@
     android:padding="6dp"
     >
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/dp_placeholder_sm"
+        android:paddingRight="3dp"/>
 
 
     <TextView

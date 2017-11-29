@@ -152,7 +152,7 @@ public class ActivityFriendProfile extends AppCompatActivity {
         et.setText(tv_FriendFullName.getText());
         et.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         builder.setView(et);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newName = et.getText().toString();

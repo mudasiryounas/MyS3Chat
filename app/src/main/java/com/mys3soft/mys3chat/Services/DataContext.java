@@ -109,7 +109,7 @@ public class DataContext extends SQLiteOpenHelper {
 
     public void deleteAllFriendsFromLocalDB() {
         String query = "delete from Friends";
-       // String queryMess = "delete from Messages";
+        // String queryMess = "delete from Messages";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query);
         //db.execSQL(queryMess);
@@ -145,7 +145,7 @@ public class DataContext extends SQLiteOpenHelper {
         List<Message> messageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         try {
-            int limit = (5 * pageNo) + 45;
+            int limit = (5 * pageNo) + 35;
             String whereCondition = "((FromMail = '" + userMail + "' and ToMail='" + friendMail + "') or (ToMail = '" + userMail + "' and FromMail='" + friendMail + "'))";
             String query = "select * from ( select rowid, * from Messages where " + whereCondition + " order by rowid desc limit " + limit + ")  order by rowid ";
             Cursor c = db.rawQuery(query, null);
@@ -155,6 +155,7 @@ public class DataContext extends SQLiteOpenHelper {
                 mess.FromMail = c.getString(c.getColumnIndex("FromMail"));
                 mess.ToMail = c.getString(c.getColumnIndex("ToMail"));
                 mess.Message = c.getString(c.getColumnIndex("Message"));
+
                 mess.SentDate = c.getString(c.getColumnIndex("SentDate"));
                 messageList.add(mess);
                 c.moveToNext();
@@ -187,6 +188,7 @@ public class DataContext extends SQLiteOpenHelper {
                 // set from email to friend so when user click on list to navigate to chat activity
                 mess.FromMail = friend.Email;
                 mess.Message = c.getString(c.getColumnIndex("Message"));
+                mess.Message = mess.Message.replace("\n", "");
                 mess.SentDate = c.getString(c.getColumnIndex("SentDate"));
                 mess.FriendFullName = friend.FirstName + " " + friend.LastName;
                 userLastChat.add(mess);
