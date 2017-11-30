@@ -61,8 +61,9 @@ public class ActivityRegister extends AppCompatActivity {
     }
 
     public void btn_RegClick(View view) {
-
-        if (et_FirstName.getText().toString().equals("")) {
+        if (!Tools.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        } else if (et_FirstName.getText().toString().equals("")) {
             et_FirstName.setError("Enter Firstname");
         } else if (et_LastName.getText().toString().equals("")) {
             et_LastName.setError("Enter Lastname");
@@ -72,12 +73,12 @@ public class ActivityRegister extends AppCompatActivity {
             et_Password.setError("Enter Password");
         } else {
             email = Tools.encodeString(et_Email.getText().toString());
-            AllUsersTask t = new AllUsersTask();
+            RegisterUserTask t = new RegisterUserTask();
             t.execute();
         }
     }
 
-    public class AllUsersTask extends AsyncTask<Void, Void, String> {
+    public class RegisterUserTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -101,7 +102,7 @@ public class ActivityRegister extends AppCompatActivity {
         @Override
         protected void onPostExecute(String jsonString) {
             try {
-                if (jsonString.trim().equals("null") ) {
+                if (jsonString.trim().equals("null")) {
                     Firebase firebase = new Firebase(StaticInfo.UsersURL);
                     firebase.child(email).child("FirstName").setValue(et_FirstName.getText().toString());
                     firebase.child(email).child("LastName").setValue(et_LastName.getText().toString());

@@ -9,4 +9,5 @@ public class Message {
     public String SentDate;
     public String FriendFullName;
 
+    public int rowid;
 }

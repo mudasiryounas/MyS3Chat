@@ -61,7 +61,7 @@
                 android:paddingRight="20dp"
                 android:onClick="btn_RegClick"
                 android:layout_gravity="center"
-                android:background="#64ab74"
+                android:background="@drawable/btn_success"
                 android:drawableLeft="@drawable/emoji_1f465"
                 android:text="Sign Up"
                 android:textColor="#ffffff" />

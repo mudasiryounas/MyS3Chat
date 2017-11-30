@@ -300,8 +300,15 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         if (id == R.id.menu_refresh) {
-            FriendListTask t = new FriendListTask();
-            t.execute();
+            
+            if (Tools.isNetworkAvailable(this)){
+
+                FriendListTask t = new FriendListTask();
+                t.execute();
+            }else {
+                Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+            }
+            
         }
 
         return super.onOptionsItemSelected(item);

@@ -11,6 +11,8 @@ import com.mys3soft.mys3chat.Models.Message;
 import com.mys3soft.mys3chat.Models.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -68,6 +70,14 @@ public class DataContext extends SQLiteOpenHelper {
             }
         }
         c.close();
+
+        Collections.sort(friendList, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.FirstName.compareTo(o2.FirstName);
+            }
+        });
+
         return friendList;
 
     }
@@ -180,7 +190,7 @@ public class DataContext extends SQLiteOpenHelper {
         List<Message> userLastChat = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         for (User friend : userFriendList) {
-            String query = "select * from Messages where (FromMail = '" + userMail + "' and ToMail='" + friend.Email + "') or (ToMail = '" + userMail + "' and FromMail='" + friend.Email + "')  order by rowid desc limit 1  ";
+            String query = "select rowid, * from Messages where (FromMail = '" + userMail + "' and ToMail='" + friend.Email + "') or (ToMail = '" + userMail + "' and FromMail='" + friend.Email + "')  order by rowid desc limit 1  ";
             Cursor c = db.rawQuery(query, null);
             c.moveToFirst();
             try {
@@ -191,12 +201,20 @@ public class DataContext extends SQLiteOpenHelper {
                 mess.Message = mess.Message.replace("\n", "");
                 mess.SentDate = c.getString(c.getColumnIndex("SentDate"));
                 mess.FriendFullName = friend.FirstName + " " + friend.LastName;
+                mess.rowid =  c.getInt(c.getColumnIndex("rowid"));
                 userLastChat.add(mess);
             } catch (Exception e) {
 
             }
 
         }
+        Collections.sort(userLastChat, new Comparator<Message>() {
+            @Override
+            public int compare(Message o1, Message o2) {
+                // -1) Less Than 0) equal 1) Greater than
+                return o1.rowid > o2.rowid ? -1 : 1;
+            }
+        });
 
         return userLastChat;
     }

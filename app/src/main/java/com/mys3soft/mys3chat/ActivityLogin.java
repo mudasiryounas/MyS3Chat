@@ -53,7 +53,9 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void btnLoginClick(View view) {
-        if (et_Email.getText().toString().equals("")) {
+        if (!Tools.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        } else if (et_Email.getText().toString().equals("")) {
             et_Email.setError("Email cannot be empty");
 
         } else if (et_Password.getText().toString().equals("")) {

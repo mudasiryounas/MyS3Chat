@@ -293,7 +293,8 @@ public class ActivityChat extends AppCompatActivity {
         super.onStart();
         Bundle extras = getIntent().getExtras();
         friendEmail = extras.getString("FriendEmail");
-        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+
+       // getSupportActionBar().setTitle(extras.getString("FriendFullName"));
        // getSupportActionBar().setIcon(R.drawable.dp_placeholder_sm);
 
         scrollView.post(new Runnable() {

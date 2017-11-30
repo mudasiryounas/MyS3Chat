@@ -61,8 +61,14 @@ public class ActivityAddContact extends AppCompatActivity {
 
     public void btn_SearchClick(View view) {
         if (!searchKey.getText().toString().trim().equals("") && searchKey.getText().toString().length() > 2) {
-            FindFriendsTask t = new FindFriendsTask();
-            t.execute();
+
+            if (Tools.isNetworkAvailable(this)){
+                FindFriendsTask t = new FindFriendsTask();
+                t.execute();
+            }else {
+                Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                }
+
         } else {
             searchKey.setText("");
             Toast.makeText(this, "Input at least 3 characters", Toast.LENGTH_SHORT).show();
@@ -84,7 +90,7 @@ public class ActivityAddContact extends AppCompatActivity {
                 return call.execute().body();
             } catch (IOException e) {
                 pd.hide();
-                e.printStackTrace();
+                Toast.makeText(ActivityAddContact.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
             }
             return null;
         }
@@ -128,6 +134,7 @@ public class ActivityAddContact extends AppCompatActivity {
 
         }
     }
+
 
 
 }
