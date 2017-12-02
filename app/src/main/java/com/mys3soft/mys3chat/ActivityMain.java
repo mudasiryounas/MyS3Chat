@@ -136,7 +136,8 @@ public class ActivityMain extends AppCompatActivity {
                             if (index == 0) {
                                 // Delete Chat
                                 new AlertDialog.Builder(ActivityMain.this)
-                                        .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
+                                        .setTitle(selectedMessageItem.FriendFullName)
+                                        .setMessage("Are you sure to delete this chat?")
                                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -192,7 +193,8 @@ public class ActivityMain extends AppCompatActivity {
                             } else {
                                 // Delete Contact
                                 new AlertDialog.Builder(ActivityMain.this)
-                                        .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
+                                        .setTitle(selectedUser.FirstName + " " + selectedUser.LastName)
+                                        .setMessage("Are you sure to delete this contact?")
                                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -259,8 +261,9 @@ public class ActivityMain extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_logout) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to logout, you will no longer recieve notifications?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    .setTitle("Logout?")
+                    .setMessage("Are you sure to logout, you will no longer receive notifications.")
+                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // set last seen
@@ -380,7 +383,8 @@ public class ActivityMain extends AppCompatActivity {
                                 if (index == 0) {
                                     // Delete Chat
                                     new AlertDialog.Builder(getActivity())
-                                            .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
+                                            .setTitle(selectedMessageItem.FriendFullName)
+                                            .setMessage("Are you sure to delete this chat?")
                                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -455,7 +459,8 @@ public class ActivityMain extends AppCompatActivity {
                                 } else {
                                     // Delete Contact
                                     new AlertDialog.Builder(getActivity())
-                                            .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
+                                            .setTitle(selectedUser.FirstName + " " + selectedUser.LastName)
+                                            .setMessage("Are you sure to delete this contact?")
                                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {

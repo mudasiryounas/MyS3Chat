@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.mys3soft.mys3chat.ActivityNotifications">
 
-    <ListView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="4dp"
+        android:background="@drawable/btn_primary"
+        android:text="Notifications"
+        android:textColor="#fff"
+        android:gravity="center" />
+
+    <ListView
         android:id="@+id/lv_NoticicationList"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </ListView>
 
-</RelativeLayout>
+</LinearLayout>

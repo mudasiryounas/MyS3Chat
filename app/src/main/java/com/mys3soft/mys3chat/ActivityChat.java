@@ -66,6 +66,7 @@ public class ActivityChat extends AppCompatActivity {
 
     private ChildEventListener reference1Listener;
     private ChildEventListener refFriendListener;
+    private String friendFullName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +201,9 @@ public class ActivityChat extends AppCompatActivity {
             appendMessage(item.Message, item.SentDate, messageType, false);
         }
 
-        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+        friendFullName = extras.getString("FriendFullName");
+
+        getSupportActionBar().setTitle(friendFullName);
         reference1 = new Firebase(StaticInfo.MessagesEndPoint + "/" + user.Email + "-@@-" + friendEmail);
         reference2 = new Firebase(StaticInfo.MessagesEndPoint + "/" + friendEmail + "-@@-" + user.Email);
         refFriend = new Firebase(StaticInfo.UsersURL + "/" + friendEmail);
@@ -350,7 +353,8 @@ public class ActivityChat extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         layout.removeAllViews();
         friendEmail = extras.getString("FriendEmail");
-        getSupportActionBar().setTitle(extras.getString("FriendFullName"));
+        friendFullName = extras.getString("FriendFullName");
+        getSupportActionBar().setTitle(friendFullName);
         List<Message> chatList = db.getChat(user.Email, friendEmail, 1);
         for (Message item : chatList) {
             int messageType = item.FromMail.equals(user.Email) ? 1 : 2;
@@ -456,7 +460,8 @@ public class ActivityChat extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_deleteConservation) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to permanently delete this chat this cannot be undone?")
+                    .setTitle(friendFullName)
+                    .setMessage("Are you sure to delete this chat?")
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -470,7 +475,8 @@ public class ActivityChat extends AppCompatActivity {
         }
         if (id == R.id.menu_deleteContact) {
             new AlertDialog.Builder(this)
-                    .setMessage("Are you sure to permanently delete this contact this cannot be undone?")
+                    .setTitle(friendFullName)
+                    .setMessage("Are you sure to delete this contact?")
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -499,6 +505,7 @@ public class ActivityChat extends AppCompatActivity {
 
         if (requestCode == StaticInfo.ChatAciviityRequestCode && resultCode == Activity.RESULT_OK) {
             User updatedFriend = db.getFriendByEmailFromLocalDB(friendEmail);
+            friendFullName = updatedFriend.FirstName;
             getSupportActionBar().setTitle(updatedFriend.FirstName);
         }
 
