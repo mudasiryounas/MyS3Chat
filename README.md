@@ -29,7 +29,7 @@ Alright, so i will not be going to each code and explain what the code is doing 
 
 ## ActivityMain.java
 
-<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen2.jpg" style="max-width:100%;max-height: 453px;margin-left: 100px;" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen2.jpg" height="450" />
 
 This will be our main activity where the user first lands, In this activity we will be first checking if user is logged in and redirecting him to ActivityLogin if not logged in. After successfully logging in, the first thing we will be showing on our application’s main activity is chat history (if there is any), that’s what any user will be looking for. 
 
