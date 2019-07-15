@@ -39,10 +39,46 @@ To avoid main thread freezing, each request to network is made in a new task.
 
 
 
+## ActivityChat.java
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen3.jpg" height="450" />
+
+After successfully showing chat history user can click on any friend’chat and we will send him to chat activity. If user do not have any contacts he can g oto search option, where he can search by name, email and send connection request.
+
+## AppService.java
+This class is responsible for listening to firebase and Show user a notication whenever there is any new activity, new message, new connection request etc.
+
+DataContext.java
+This is the class where we handle all local data storage for getting chat history, getting contact lists, deleteing contact, saving new message to local storage etc.
+
+IFireBaseAPI.java
+İn this class i have iplemented retrofit api to get response from firabase as a json string. 
+
+
+That’s it, clone the Project from github, build on your android studio and there you have complete working android application, as i promised.
+
+
+
+This Project is not very complex, but it’s also not very easy to understand if you have just landed your feet on android World.
+
+Please feel free to contact me for any problem or if you don’t understand any par tor if you just want to say hello.
+
+
+# Screenshots:
+
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen4.jpg" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen5.jpg" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen6.jpg" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen7.jpg" height="450" />
 
 
 
 
+
+## Offficial links:
+Android Studio: https://developer.android.com/studio
+Firebase: https://firebase.google.com/docs/database
+Firebase Android Setup: https://firebase.google.com/docs/database/android/start
+Retrofit2: https://square.github.io/retrofit/
 
 
 
