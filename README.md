@@ -16,5 +16,5 @@ Prerequisites:
 *	Android Physical or virtual device is ready for testing our application
 *	An account of firebase real-time database
 
-What is firebase real-time datatabse?
+## What is firebase real-time datatabse?
 The Firebase Realtime Database is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime. We will be using this datatabse to sync data between users, and Show notification whenever new message arrive.
