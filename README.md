@@ -65,10 +65,10 @@ Please feel free to contact me for any problem or if you don’t understand any 
 
 # Screenshots:
 
-<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen4.jpg" height="450" />
-<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen5.jpg" height="450" />
-<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen6.jpg" height="450" />
-<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen7.jpg" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen4.jpg" width="150" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen5.jpg" width="150" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen6.jpg" width="150" height="450" />
+<img src="https://github.com/mudasiryounas/MyS3Chat/blob/master/screenshots/screen7.jpg" width="150" height="450" />
 
 
 
