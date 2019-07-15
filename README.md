@@ -78,7 +78,8 @@ Please feel free to contact me for any problem or if you don’t understand any 
 * Retrofit2: https://square.github.io/retrofit/
 
 
-# Follow me on <a href="https://www.linkedin.com/in/mudasiryounas"><img src="http://icons.iconarchive.com/icons/limav/flat-gradient-social/48/Linkedin-icon.png"></a>
+# Follow me on 
+<a href="https://www.linkedin.com/in/mudasiryounas"><img src="http://icons.iconarchive.com/icons/limav/flat-gradient-social/48/Linkedin-icon.png"></a>
 
 
 
