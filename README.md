@@ -72,10 +72,10 @@ Please feel free to contact me for any problem or if you don’t understand any 
 
 
 ## Offficial links:
-Android Studio: https://developer.android.com/studio
-Firebase: https://firebase.google.com/docs/database
-Firebase Android Setup: https://firebase.google.com/docs/database/android/start
-Retrofit2: https://square.github.io/retrofit/
+* Android Studio: https://developer.android.com/studio
+* Firebase: https://firebase.google.com/docs/database
+* Firebase Android Setup: https://firebase.google.com/docs/database/android/start
+* Retrofit2: https://square.github.io/retrofit/
 
 
 
