@@ -9,7 +9,6 @@ PlaySore: https://play.google.com/store/apps/details?id=com.mys3soft.mys3chat
 
 
 <a href="https://play.google.com/store/apps/details?id=com.mys3soft.mys3chat"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="50px"/></a>
-<a href="https://f-droid.org/repository/browse/?fdid=com.ichi2.anki"><img alt="F-Droid" src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Get_it_on_F-Droid.svg" height="50px"/></a>
 
 
 This tutorial assume that you have basic knowledge of Java and Android SDK, you have build through small android appplications and you are ready to apply your learning on some real projects.
