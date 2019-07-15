@@ -59,7 +59,7 @@ That’s it, clone the Project from github, build on your android studio and the
 
 This Project is not very complex, but it’s also not very easy to understand if you have just landed your feet on android World.
 
-Please feel free to contact me for any problem or if you don’t understand any part or if you just want to say hello. (Contract me on <a href="https://www.linkedin.com/in/mudasiryounas">Linkedin</a>)
+Please feel free to contact me for any problem or if you don’t understand any part or if you just want to say hello. (Contact me on <a href="https://www.linkedin.com/in/mudasiryounas">Linkedin</a>)
 
 
 # Screenshots:
