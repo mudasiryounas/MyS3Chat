@@ -14,9 +14,9 @@ This tutorial assume that you have basic knowledge of Java and Android SDK, you 
 
 
 Prerequisites: 
-•	Android studio is installed and Android SDK is configured
-•	Android Physical or virtual device is ready for testing our application
-•	An account of firebase real-time database
+*	Android studio is installed and Android SDK is configured
+*	Android Physical or virtual device is ready for testing our application
+*	An account of firebase real-time database
 
 What is firebase real-time datatabse?
 The Firebase Realtime Database is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime. We will be using this datatabse to sync data between users, and Show notification whenever new message arrive.
