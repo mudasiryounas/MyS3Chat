@@ -5,10 +5,7 @@
 
 In this tutorial we will be developing real time chat application using firebase, At the end of this tutorial, you will have a complete working android application ready to be published on playstore, exited? Let’s get started.
 
-PlaySore: https://play.google.com/store/apps/details?id=com.mys3soft.mys3chat
-
-
-<a href="https://play.google.com/store/apps/details?id=com.mys3soft.mys3chat"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="50px"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.mys3soft.mys3chat"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60px"/></a>
 
 
 This tutorial assume that you have basic knowledge of Java and Android SDK, you have build through small android appplications and you are ready to apply your learning on some real projects.
