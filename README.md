@@ -68,7 +68,7 @@ Please feel free to contact me for any problem or if you don’t understand any 
 
 
 # Important Note:
-The firebase account currently used in this application is public, which means any one can see data you enter while testing this application, You may keep using this account for testig purpose but please make sure you change the firebase account after testing.
+The firebase account currently used in this application is public, which means anyone can see data you enter while testing this application, you may keep using this account for testing purpose but please make sure you change the firebase account after testing.
 
 
 
