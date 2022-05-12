@@ -72,7 +72,7 @@ The firebase account currently used in this application is public, which means a
 
 
 
-## Offficial links:
+## Official links:
 * Android Studio: https://developer.android.com/studio
 * Firebase: https://firebase.google.com/docs/database
 * Firebase Android Setup: https://firebase.google.com/docs/database/android/start
