@@ -79,8 +79,7 @@ The firebase account currently used in this application is public, which means a
 * Retrofit2: https://square.github.io/retrofit/
 
 
-# Follow me on 
-<a href="https://www.linkedin.com/in/mudasiryounas"><img src="http://icons.iconarchive.com/icons/limav/flat-gradient-social/48/Linkedin-icon.png"></a>
+# Reach me on: <a href="https://www.linkedin.com/in/mudasiryounas">LinkedIn</a>
 
 
 
